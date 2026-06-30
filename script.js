@@ -3765,7 +3765,6 @@ const TODAS_FORMACOES = {
 };
 const ORDEM_TATICA = ['GOL', 'LD', 'ZAG', 'LE', 'VOL', 'MC', 'ME', 'MD', 'MEI', 'PE', 'PD', 'SA', 'ATA'];
 
-// Atualizei o link aqui dentro pro oficial da sua Vercel: 7a0-brasil.vercel.app!
 const i18n = {
     pt: { formation: "FORMAÇÃO", mode_diff: "MODO • DIFICULDADE", classic: "Clássico", roll_dice: "ROLAR DADO", rolling: "Rolando os dados...", drawn: "SAIU", reroll: "OUTRO SORTEIO", choose_player: "ESCOLHA UM JOGADOR", cancel: "CANCELAR AÇÃO", box_score: "BOX SCORE", total_ovr: "OVR TOTAL", attack: "ATAQUE", defense: "DEFESA", direct_result: "RESULTADO DIRETO", play_by_play: "LANCE A LANCE", advance: "AVANÇAR", stats: "ESTATÍSTICAS", cup_results: "CHAVEAMENTO", penalties: "PÊNALTIS", settings_btn: "AJUSTES ▾", theme: "Tema:", language: "Idioma:",
         spin_again: "GIRAR NOVAMENTE", lifesaver: "SALVA-VIDAS", no_space: "SEM ESPAÇO! ROLAGEM DE EMERGÊNCIA.", rerolls_left: "NÃO CURTIU? {n} RESTANTES", no_rerolls: "SEM RESORTEIOS", ultimate_no_rerolls: "MODO ULTIMATE (0 RESORTEIOS)", click_pitch: "CLIQUE OBRIGATORIAMENTE NO CAMPO", time_out: "TEMPO ESGOTADO! Jogador aleatório escalado.", go_to_knockout: "IR PARA O MATA-MATA",
@@ -3775,7 +3774,10 @@ const i18n = {
         tba: "A definir", wait_goals: "Aguardando gols...", wait_assists: "Aguardando assist...", wait_cs: "Aguardando defesas...", sim_cpu_next: "SIMULAR PRÓXIMA FASE (CPU)", copy_perf: "📋 COPIAR DESEMPENHO", copied: "Texto copiado para a área de transferência!", play_again: "🔄 JOGAR NOVAMENTE", view_bracket: "📊 VER CHAVEAMENTO",
         champ_desc: "Você esculpiu seu nome na história do futebol.", elim_desc: "A zebra solta não perdoa ninguém.",
         artilharia: "⚽ ARTILHARIA", assistencias: "👟 ASSISTÊNCIAS", clean_sheets: "🧤 CLEAN SHEETS",
-        pos_GOL: "GOL", pos_LD: "LD", pos_ZAG: "ZAG", pos_LE: "LE", pos_VOL: "VOL", pos_MC: "MC", pos_ME: "ME", pos_MD: "MD", pos_MEI: "MEI", pos_PE: "PE", pos_PD: "PD", pos_SA: "SA", pos_ATA: "ATA", share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nMontei meu esquadrão tático com: {nomes}.\nDesempenho: {status}!\nOVR Total: {ovr}\n\nJogue também: https://7a0-brasil.vercel.app"
+        pos_GOL: "GOL", pos_LD: "LD", pos_ZAG: "ZAG", pos_LE: "LE", pos_VOL: "VOL", pos_MC: "MC", pos_ME: "ME", pos_MD: "MD", pos_MEI: "MEI", pos_PE: "PE", pos_PD: "PD", pos_SA: "SA", pos_ATA: "ATA", 
+        share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nTática: {tatic}\nOVR Total: {ovr}\n\n{result_text}\n\nEscalação:\n{lista_jogadores}\n\nJogue também: https://7a0-brasil.vercel.app",
+        share_champ: "🏆 CAMPEÃO! (Venceu o {adv} na Final)",
+        share_elim: "❌ ELIMINADO nas {fase} para o {adv}"
     },
     en: {
         formation: "FORMATION", mode_diff: "MODE • DIFFICULTY", classic: "Classic", roll_dice: "ROLL DICE", rolling: "Rolling dice...", drawn: "DRAWN", reroll: "REROLL", choose_player: "CHOOSE A PLAYER", cancel: "CANCEL ACTION", box_score: "BOX SCORE", total_ovr: "TOTAL OVR", attack: "ATTACK", defense: "DEFENSE", direct_result: "QUICK SIM", play_by_play: "PLAY-BY-PLAY", advance: "ADVANCE", stats: "STATS", cup_results: "BRACKET", penalties: "SHOOTOUT", settings_btn: "SETTINGS ▾", theme: "Theme:", language: "Language:",
@@ -3786,7 +3788,10 @@ const i18n = {
         tba: "TBD", wait_goals: "Waiting for goals...", wait_assists: "Waiting for assists...", wait_cs: "Waiting for clean sheets...", sim_cpu_next: "SIM NEXT ROUND (CPU)", copy_perf: "📋 COPY PERFORMANCE", copied: "Text copied to clipboard!", play_again: "🔄 PLAY AGAIN", view_bracket: "📊 VIEW BRACKET",
         champ_desc: "You have carved your name in football history.", elim_desc: "The underdog spares no one.",
         artilharia: "⚽ TOP SCORERS", assistencias: "👟 ASSISTS", clean_sheets: "🧤 CLEAN SHEETS",
-        pos_GOL: "GK", pos_LD: "RB", pos_ZAG: "CB", pos_LE: "LB", pos_VOL: "CDM", pos_MC: "CM", pos_ME: "LM", pos_MD: "RM", pos_MEI: "CAM", pos_PE: "LW", pos_PD: "RW", pos_SA: "CF", pos_ATA: "ST", share_text: "🏆 [7-0 BRAZIL - HISTORIC CUP]\n\nBuilt my dream team: {nomes}.\nPerformance: {status}!\nTotal OVR: {ovr}\n\nPlay now: https://7a0-brasil.vercel.app"
+        pos_GOL: "GK", pos_LD: "RB", pos_ZAG: "CB", pos_LE: "LB", pos_VOL: "CDM", pos_MC: "CM", pos_ME: "LM", pos_MD: "RM", pos_MEI: "CAM", pos_PE: "LW", pos_PD: "RW", pos_SA: "CF", pos_ATA: "ST", 
+        share_text: "🏆 [7-0 BRAZIL - HISTORIC CUP]\n\nTactic: {tatic}\nTotal OVR: {ovr}\n\n{result_text}\n\nStarting XI:\n{lista_jogadores}\n\nPlay now: https://7a0-brasil.vercel.app",
+        share_champ: "🏆 CHAMPION! (Beat {adv} in the Final)",
+        share_elim: "❌ ELIMINATED in the {fase} by {adv}"
     },
     es: {
         formation: "FORMACIÓN", mode_diff: "MODO • DIFICULTAD", classic: "Clásico", roll_dice: "LANZAR DADO", rolling: "Lanzando dados...", drawn: "SORTEADO", reroll: "OTRO SORTEO", choose_player: "ELIGE JUGADOR", cancel: "CANCELAR ACCIÓN", box_score: "BOX SCORE", total_ovr: "GRL TOTAL", attack: "ATAQUE", defense: "DEFENSA", direct_result: "RESULTADO RÁPIDO", play_by_play: "JUGADA A JUGADA", advance: "AVANZAR", stats: "ESTADÍSTICAS", cup_results: "CUADRO", penalties: "PENALES", settings_btn: "AJUSTES ▾", theme: "Tema:", language: "Idioma:",
@@ -3797,7 +3802,10 @@ const i18n = {
         tba: "Por definir", wait_goals: "Esperando goles...", wait_assists: "Esperando asist...", wait_cs: "Esperando porterías a cero...", sim_cpu_next: "SIMULAR SIGUIENTE (CPU)", copy_perf: "📋 COPIAR DESEMPEÑO", copied: "¡Texto copiado al portapapeles!", play_again: "🔄 JUGAR DE NUEVO", view_bracket: "📊 VER CUADRO",
         champ_desc: "Has esculpido tu nombre en la historia del fútbol.", elim_desc: "La sorpresa no perdona a nadie.",
         artilharia: "⚽ GOLEADORES", assistencias: "👟 ASISTENCIAS", clean_sheets: "🧤 PORTERÍAS IMBATIDAS",
-        pos_GOL: "POR", pos_LD: "LD", pos_ZAG: "DFC", pos_LE: "LI", pos_VOL: "MCD", pos_MC: "MC", pos_ME: "MI", pos_MD: "MD", pos_MEI: "MCO", pos_PE: "EI", pos_PD: "ED", pos_SA: "SD", pos_ATA: "DC", share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nArmé mi equipo soñado: {nomes}.\nRendimiento: ¡{status}!\nGRL Total: {ovr}\n\nJuega tú también: https://7a0-brasil.vercel.app"
+        pos_GOL: "POR", pos_LD: "LD", pos_ZAG: "DFC", pos_LE: "LI", pos_VOL: "MCD", pos_MC: "MC", pos_ME: "MI", pos_MD: "MD", pos_MEI: "MCO", pos_PE: "EI", pos_PD: "ED", pos_SA: "SD", pos_ATA: "DC", 
+        share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nTáctica: {tatic}\nGRL Total: {ovr}\n\n{result_text}\n\nAlineación:\n{lista_jogadores}\n\nJuega tú también: https://7a0-brasil.vercel.app",
+        share_champ: "🏆 ¡CAMPEÓN! (Venció a {adv} en la Final)",
+        share_elim: "❌ ELIMINADO en {fase} por {adv}"
     }
 };
 
@@ -4054,7 +4062,7 @@ function atualizarBoxScore() {
 }
 
 // ==========================================
-// MATA-MATA COM DICIONARIO PROTEGIDO
+// MATA-MATA
 // ==========================================
 
 function mudarAbaStats(aba) {
@@ -4442,12 +4450,35 @@ function fecharModalEVerResultados() {
     mudarAbaStats('tabela');
 }
 
+// CORREÇÃO: Compartilhamento Ordenado e Avançado
 function copiarPerformance() {
     let status = document.getElementById("mf-titulo").innerText;
-    let nomesTime = Object.values(meuTime).map(j => j.nome).join(', ');
     let ovr = document.getElementById("val-ovr-total").innerText;
-    let msgShare = t("share_text", {nomes: nomesTime, status: status, ovr: ovr});
-    navigator.clipboard.writeText(msgShare); alert(t("copied"));
+    
+    let listaJogadores = "";
+    let def = TODAS_FORMACOES[formacaoAtual];
+    Object.keys(def.posicoes).forEach((key, i) => {
+        let j = meuTime[key];
+        if(j) {
+            let posText = t('pos_'+def.labels[i]);
+            listaJogadores += `- ${posText}: ${j.nome} (${j.timeOrigem}) | OVR ${modoUltimate ? '?' : j.overall}\n`;
+        }
+    });
+
+    let resultText = "";
+    let adv = cpuAtual ? cpuAtual.nome : "Adversário";
+    if (torneioFinalizado) {
+        resultText = t("share_champ", { adv: adv });
+    } else {
+        let mapFases = { 'OITAVAS': 'round_16', 'QUARTAS': 'quarters', 'SEMI': 'semis', 'FINAL': 'final' };
+        let faseStr = t(mapFases[partidaAtual.fase] || partidaAtual.fase);
+        resultText = t("share_elim", { fase: faseStr, adv: adv });
+    }
+
+    let msgShare = t("share_text", { tatic: formacaoAtual, ovr: ovr, result_text: resultText, lista_jogadores: listaJogadores.trim() });
+    
+    navigator.clipboard.writeText(msgShare); 
+    alert(t("copied"));
 }
 
 function recomecarJogoDoZero() {
