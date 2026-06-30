@@ -1,4 +1,153 @@
-// 1. BANCO DE TIMES (Cole os seus aqui)
+// INICIALIZAÇÃO DO FIREBASE (Sua conexão com o Servidor!)
+const firebaseConfig = {
+  apiKey: "AIzaSyDnLonFPqJmhy2p-Nujza9ITwnRhUemqCQ",
+  authDomain: "a0-brasil-multiplayer.firebaseapp.com",
+  databaseURL: "https://a0-brasil-multiplayer-default-rtdb.firebaseio.com", // Adicionado para garantir!
+  projectId: "a0-brasil-multiplayer",
+  storageBucket: "a0-brasil-multiplayer.firebasestorage.app",
+  messagingSenderId: "738278157747",
+  appId: "1:738278157747:web:31ac1ec40c700924936fc6"
+};
+
+// Liga o Firebase usando a versão Compat que colocamos no HTML
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// VARIÁVEIS MULTIPLAYER
+let salaAtual = null;
+let meuNomeMultiplayer = "Player_" + Math.floor(Math.random() * 1000); // Nome provisório
+let isHost = false;
+
+// ==========================================
+// FUNÇÕES DA TELA DE LOBBY
+// ==========================================
+
+function iniciarSingleplayer() {
+    // Esconde o Lobby e mostra o jogo normal
+    document.getElementById("tela-lobby").classList.add("hidden");
+    document.getElementById("painel-jogo").classList.remove("hidden");
+}
+
+function abrirMenuMultiplayer() {
+    document.getElementById("menu-principal-lobby").classList.add("hidden");
+    document.getElementById("menu-multiplayer-lobby").classList.remove("hidden");
+}
+
+function voltarMenuLobby() {
+    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
+    document.getElementById("menu-entrar-sala").classList.add("hidden");
+    document.getElementById("menu-principal-lobby").classList.remove("hidden");
+}
+
+function abrirEntrarSala() {
+    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
+    document.getElementById("menu-entrar-sala").classList.remove("hidden");
+}
+
+// GERA CÓDIGO DE 4 LETRAS/NÚMEROS
+function gerarCodigoSala() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+    return code;
+}
+
+// O HOST CRIA A SALA
+function criarSalaMultiplayer() {
+    const codigo = gerarCodigoSala();
+    salaAtual = codigo;
+    isHost = true;
+    
+    // Cria a sala no Firebase
+    db.ref('salas/' + codigo).set({
+        status: 'aguardando',
+        jogadores: {
+            [meuNomeMultiplayer]: { host: true }
+        }
+    }).then(() => {
+        entrarNaInterfaceDaSala();
+        escutarAlteracoesNaSala();
+    });
+}
+
+// O CONVIDADO ENTRA NA SALA
+function entrarSalaMultiplayer() {
+    const codigoInput = document.getElementById("input-codigo-sala").value.toUpperCase();
+    if(codigoInput.length !== 4) return alert("Código inválido!");
+
+    // Verifica se a sala existe no Firebase
+    db.ref('salas/' + codigoInput).once('value').then((snapshot) => {
+        if(snapshot.exists()) {
+            salaAtual = codigoInput;
+            isHost = false;
+            
+            // Adiciona o jogador novo na sala
+            db.ref(`salas/${salaAtual}/jogadores/${meuNomeMultiplayer}`).set({ host: false }).then(() => {
+                entrarNaInterfaceDaSala();
+                escutarAlteracoesNaSala();
+            });
+        } else {
+            alert("Sala não encontrada!");
+        }
+    });
+}
+
+// MUDA A TELA PARA A "SALA DE ESPERA"
+function entrarNaInterfaceDaSala() {
+    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
+    document.getElementById("menu-entrar-sala").classList.add("hidden");
+    document.getElementById("sala-de-espera").classList.remove("hidden");
+    
+    document.getElementById("codigo-sala-display").innerText = salaAtual;
+    
+    if(isHost) {
+        document.getElementById("btn-iniciar-partida-multi").classList.remove("hidden");
+    }
+}
+
+// FIREBASE: FICA DE OLHO QUEM ENTRA E QUEM SAI EM TEMPO REAL
+function escutarAlteracoesNaSala() {
+    db.ref('salas/' + salaAtual + '/jogadores').on('value', (snapshot) => {
+        const jogadores = snapshot.val();
+        if(!jogadores) return; // Sala vazia/deletada
+        
+        const listaHtml = document.getElementById("lista-jogadores-sala");
+        listaHtml.innerHTML = "";
+        
+        let qtd = 0;
+        for(let nome in jogadores) {
+            qtd++;
+            let badge = jogadores[nome].host ? '👑 ' : '';
+            let isMe = nome === meuNomeMultiplayer ? ' (Você)' : '';
+            listaHtml.innerHTML += `<div class="lobby-player-row">${badge}${nome}${isMe}</div>`;
+        }
+        
+        document.getElementById("status-jogadores-sala").innerText = `Jogadores na sala: ${qtd}/16`;
+    });
+}
+
+function sairDaSala() {
+    if(salaAtual) {
+        // Remove jogador do banco
+        db.ref(`salas/${salaAtual}/jogadores/${meuNomeMultiplayer}`).remove().then(() => {
+            // Se era o Host e ele saiu, talvez a gente delete a sala depois.
+            // Por enquanto só volta pra tela inicial.
+            salaAtual = null;
+            document.getElementById("sala-de-espera").classList.add("hidden");
+            document.getElementById("menu-principal-lobby").classList.remove("hidden");
+        });
+    }
+}
+
+function iniciarDraftMultiplayer() {
+    alert("Próxima Fase: Sincronizar o Draft! Aguarde os próximos códigos.");
+}
+
+// =========================================================================
+// O RESTO DO SEU CÓDIGO NORMAL (Singleplayer que já funciona) FICA AQUI 
+// =========================================================================
+
+// 1. BANCO DE TIMES (Insira todos aqui com cuidado)
 const textoBrutoDosTimes = `
 Time: Flamengo 2025
 Rossi, GOL, 84
@@ -3816,19 +3965,6 @@ function t(key, params = {}) {
     return text;
 }
 
-let meuTime = {}; let meuTimeIds = new Set(); let formacaoAtual = '4-3-3'; let resorteiosRestantes = 3; let modoUltimate = false; let faseDePlacement = false; let jogadorSendoPosicionado = null; let timeSorteadoAtual = null; let roletaAnimando = false; let jogoIniciado = false; 
-let draftTimer; let timeLeft = 30;
-
-let statsCopa = { artilheiros: {}, garcons: {}, cleanSheets: {} };
-let poolEquipesCopa = []; let chavesChampionship = { 'OITAVAS': [], 'QUARTAS': [], 'SEMI': [], 'FINAL': [] }; 
-let partidaAtual = { fase: 'OITAVAS', jogo: 1, golsMeus: 0, golsCpu: 0, agregadoMeus: 0, agregadoCpu: 0 };
-let cpuAtual = null; let meuOvrTorneio = 0; let narracaoInterval = null;
-let eventosPartidaAtual = { meuTime: { gols: {}, assistencias: {} }, cpu: { gols: {}, assistencias: {} } };
-let playerEliminado = false; let torneioFinalizado = false;
-
-function gerarIdJogador(jogador) { return `${jogador.nome}_${jogador.timeOrigem}`; }
-function verificarSeECloneDoElenco(jogador) { return Object.values(meuTime).some(j => j.nome === jogador.nome && j.posicoes.some(p => jogador.posicoes.includes(p))); }
-
 processarBancoDeDados(); desenharFormacao(); atualizarBoxScore();
 
 function toggleSettings() { document.getElementById("settings-dropdown").classList.toggle("hidden"); }
@@ -4450,7 +4586,6 @@ function fecharModalEVerResultados() {
     mudarAbaStats('tabela');
 }
 
-// CORREÇÃO: Compartilhamento Ordenado e Avançado
 function copiarPerformance() {
     let status = document.getElementById("mf-titulo").innerText;
     let ovr = document.getElementById("val-ovr-total").innerText;
