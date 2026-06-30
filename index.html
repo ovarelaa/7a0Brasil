@@ -8,7 +8,44 @@
 </head>
 <body>
 
-    <div id="painel-jogo" class="app-layout" data-theme="dark">
+    <div id="tela-lobby" class="tela-lobby" data-theme="dark">
+        <div class="lobby-box">
+            <div class="logo" style="justify-content: center; margin-bottom: 30px;">
+                <span class="logo-7">7</span><span class="logo-0">-0</span><span class="logo-brasil"> BRASIL</span>
+            </div>
+            
+            <div id="menu-principal-lobby">
+                <button class="btn-rolar-big-sim" onclick="iniciarSingleplayer()" style="margin-bottom: 15px;">👤 SINGLEPLAYER</button>
+                <button class="btn-secundario-sim" onclick="abrirMenuMultiplayer()" style="width: 100%; border: 1px solid var(--gold); color: var(--gold);">🌐 MULTIPLAYER</button>
+            </div>
+
+            <div id="menu-multiplayer-lobby" class="hidden">
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="btn-rolar-big-sim" onclick="criarSalaMultiplayer()" style="flex: 1; font-size: 14px;">➕ CRIAR SALA</button>
+                    <button class="btn-secundario-sim" onclick="abrirEntrarSala()" style="flex: 1; font-size: 14px;">🚪 ENTRAR</button>
+                </div>
+                <button class="btn-secundario-sim" onclick="voltarMenuLobby()" style="width: 100%; font-size: 12px; border: none;">Voltar</button>
+            </div>
+
+            <div id="menu-entrar-sala" class="hidden">
+                <input type="text" id="input-codigo-sala" placeholder="CÓDIGO DA SALA (Ex: A1B2)" maxlength="4" style="width: 100%; padding: 15px; font-size: 18px; text-align: center; font-weight: bold; text-transform: uppercase; background: var(--darker-bg); border: 1px solid var(--panel-border); color: var(--text-primary); border-radius: 6px; margin-bottom: 15px;">
+                <button class="btn-rolar-big-sim" onclick="entrarSalaMultiplayer()" style="margin-bottom: 15px;">ENTRAR</button>
+                <button class="btn-secundario-sim" onclick="voltarMenuLobby()" style="width: 100%; font-size: 12px; border: none;">Cancelar</button>
+            </div>
+
+            <div id="sala-de-espera" class="hidden">
+                <h3 style="color: var(--text-secondary); margin-top: 0;">CÓDIGO DA SALA:</h3>
+                <h1 id="codigo-sala-display" style="font-size: 48px; color: var(--gold); margin: 0 0 20px 0; letter-spacing: 5px;">----</h1>
+                <p id="status-jogadores-sala" style="color: var(--text-primary); font-weight: bold;">Jogadores na sala: 1/16</p>
+                <div id="lista-jogadores-sala" style="background: var(--darker-bg); border: 1px solid var(--panel-border); border-radius: 6px; padding: 15px; margin-bottom: 20px; text-align: left; min-height: 100px;">
+                    </div>
+                <button id="btn-iniciar-partida-multi" class="btn-rolar-big-sim hidden" onclick="iniciarDraftMultiplayer()" style="margin-bottom: 15px;">INICIAR DRAFT!</button>
+                <button class="btn-secundario-sim" onclick="sairDaSala()" style="width: 100%; font-size: 12px; border: none;">Sair da Sala</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="painel-jogo" class="app-layout hidden" data-theme="dark">
         <div id="modal-fim-jogo" class="modal-fim hidden">
             <div class="modal-content">
                 <h1 id="mf-titulo">CAMPEÃO!</h1>
@@ -191,11 +228,13 @@
                     <button class="tab-btn active" onclick="mudarAbaStats('stats')" data-i18n="stats">ESTATÍSTICAS</button>
                     <button class="tab-btn" onclick="mudarAbaStats('tabela')" data-i18n="cup_results">CHAVEAMENTO</button>
                 </div>
+                
                 <div id="conteudo-aba-stats" class="sub-painel-stats">
                     <div class="ranking-box"><h5 data-i18n="artilharia">⚽ ARTILHARIA</h5><div id="ranking-artilheiros" class="ranking-list"></div></div>
                     <div class="ranking-box"><h5 data-i18n="assistencias">👟 ASSISTÊNCIAS</h5><div id="ranking-garcons" class="ranking-list"></div></div>
                     <div class="ranking-box"><h5 data-i18n="clean_sheets">🧤 CLEAN SHEETS</h5><div id="ranking-defesas" class="ranking-list"></div></div>
                 </div>
+                
                 <div id="conteudo-aba-tabela" class="sub-painel-stats hidden">
                     <div class="bracket-actions">
                         <button id="btn-simular-resto" class="btn-secundario-sim hidden" onclick="simularProximaFaseCPU()" data-i18n="sim_cpu_next">SIMULAR PRÓXIMA FASE (CPU)</button>
@@ -213,6 +252,9 @@
     </div>
 </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+    
     <script src="script.js"></script>
 </body>
 </html>
