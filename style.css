@@ -5,7 +5,6 @@
     --header-height: 80px; --panel-border: #333333;
     --box-bg: #151515; --placar-bg: #1a1a1a; --darker-bg: #050505;
 }
-
 [data-theme="light"] {
     --bg-color: #eef2f5; --panel-bg: #ffffff; --pitch-bg: #2ecc71;
     --text-primary: #111111; --text-secondary: #444444;
@@ -184,46 +183,45 @@ button:hover:not(.active):not(:disabled) { background-color: rgba(243, 156, 18, 
 .b-team.winner { font-weight: bold; color: var(--text-primary); background: rgba(243, 156, 18, 0.05); }
 .b-team.winner span:first-child { color: var(--gold); }
 
-
 /* =======================================================
    REGRAS DE RESPONSIVIDADE (MOBILE READY)
-   Mágica que faz tudo se adaptar pra telas pequenas!
    ======================================================= */
 @media (max-width: 950px) {
-    /* Header Empilhado */
     .app-header { flex-wrap: wrap; padding: 15px; height: auto; justify-content: center; gap: 15px; text-align: center; }
     .logo { font-size: 32px; }
     .header-info { width: 100%; order: 3; margin-top: 5px; }
-    .dropdown-content { right: 50%; transform: translateX(50%); top: 45px; } /* Ajusta o menu centralizado */
+    .dropdown-content { right: 50%; transform: translateX(50%); top: 45px; } 
 
-    /* Container Principal Vertical */
     .game-main { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
     
-    /* Painéis Esticam pra 100% da Largura */
     .panel-left, .panel-right { width: 100%; height: auto; border: none; overflow: visible; padding: 15px; }
     .panel-left { border-bottom: 2px solid var(--panel-border); }
-    .panel-right { border-top: 2px solid var(--panel-border); }
+    .panel-right { border-top: 2px solid var(--panel-border); padding-bottom: 40px; }
     
-    /* Gramado Reduzido */
+    /* A MÁGICA: Escalação no celular em 2 colunas para não vazar a tela */
+    #box-score-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 15px;
+        row-gap: 5px;
+    }
+
     .pitch-container { min-height: 450px; padding: 20px 10px; }
     .pitch-visual { max-width: 320px; }
     .field-slot { width: 36px; height: 36px; font-size: 9px; }
     .field-slot.filled .ovr-only { font-size: 14px; }
     .player-pitch-name { font-size: 9px; bottom: -14px; }
 
-    /* Tela de Simulação Mobile */
     #view-mata-mata { height: calc(100vh - 140px); overflow-x: hidden;}
     .torneio-layout { flex-direction: column; height: auto; overflow-y: visible; gap: 15px; }
     .torneio-direita-stats { width: 100%; min-height: 400px; height: auto; }
     
-    /* Placar Flexível */
     .placar-simulacao { flex-direction: column; align-items: center; gap: 15px; padding: 20px 15px;}
     .time-box { width: 100%; border-bottom: 1px solid var(--panel-border); padding-bottom: 15px; }
     .time-box:last-child { border-bottom: none; padding-bottom: 0; }
     .versus-col { margin: 5px 0; flex-direction: row; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: center; }
     .versus-box { margin-top: 0; }
     
-    /* Botões na vertical e ajustados */
     .actions-group { flex-direction: column; width: 100%; align-items: center; }
     .btn-secundario-sim, .btn-rolar-big-sim { width: 100%; max-width: 300px; }
 }
