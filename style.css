@@ -14,7 +14,8 @@
 
 * { box-sizing: border-box; }
 body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-primary); margin: 0; padding: 0; height: 100vh; overflow: hidden; transition: background-color 0.3s, color 0.3s; }
-.app-layout { display: flex; flex-direction: column; height: 100vh; width: 100vw; background-color: var(--bg-color); }
+/* FIX MOBILE: 100dvh calcula o tamanho ignorando a barra de navegação do celular */
+.app-layout { display: flex; flex-direction: column; height: 100vh; height: 100dvh; width: 100vw; background-color: var(--bg-color); }
 .hidden { display: none !important; }
 
 /* Modais */
@@ -183,6 +184,7 @@ button:hover:not(.active):not(:disabled) { background-color: rgba(243, 156, 18, 
 .b-team.winner { font-weight: bold; color: var(--text-primary); background: rgba(243, 156, 18, 0.05); }
 .b-team.winner span:first-child { color: var(--gold); }
 
+
 /* =======================================================
    REGRAS DE RESPONSIVIDADE (MOBILE READY)
    ======================================================= */
@@ -194,11 +196,12 @@ button:hover:not(.active):not(:disabled) { background-color: rgba(243, 156, 18, 
 
     .game-main { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
     
+    /* FIX DO CORTE: Padding gigante embaixo para garantir que a barra do browser não cubra os jogadores */
     .panel-left, .panel-right { width: 100%; height: auto; border: none; overflow: visible; padding: 15px; }
     .panel-left { border-bottom: 2px solid var(--panel-border); }
-    .panel-right { border-top: 2px solid var(--panel-border); padding-bottom: 40px; }
+    .panel-right { border-top: 2px solid var(--panel-border); padding-bottom: 120px; }
     
-    /* A MÁGICA: Escalação no celular em 2 colunas para não vazar a tela */
+    /* A MÁGICA: Escalação no celular em 2 colunas */
     #box-score-list {
         display: grid;
         grid-template-columns: 1fr 1fr;
