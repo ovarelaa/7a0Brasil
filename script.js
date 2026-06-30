@@ -1,153 +1,23 @@
-// INICIALIZAÇÃO DO FIREBASE (Sua conexão com o Servidor!)
+// ==========================================
+// 1. INICIALIZAÇÃO DO FIREBASE
+// ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyDnLonFPqJmhy2p-Nujza9ITwnRhUemqCQ",
   authDomain: "a0-brasil-multiplayer.firebaseapp.com",
-  databaseURL: "https://a0-brasil-multiplayer-default-rtdb.firebaseio.com", // Adicionado para garantir!
+  databaseURL: "https://a0-brasil-multiplayer-default-rtdb.firebaseio.com",
   projectId: "a0-brasil-multiplayer",
   storageBucket: "a0-brasil-multiplayer.firebasestorage.app",
   messagingSenderId: "738278157747",
   appId: "1:738278157747:web:31ac1ec40c700924936fc6"
 };
 
-// Liga o Firebase usando a versão Compat que colocamos no HTML
+// Liga o Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// VARIÁVEIS MULTIPLAYER
-let salaAtual = null;
-let meuNomeMultiplayer = "Player_" + Math.floor(Math.random() * 1000); // Nome provisório
-let isHost = false;
-
 // ==========================================
-// FUNÇÕES DA TELA DE LOBBY
+// 2. BANCO DE TIMES (COLE O SEU AQUI)
 // ==========================================
-
-function iniciarSingleplayer() {
-    // Esconde o Lobby e mostra o jogo normal
-    document.getElementById("tela-lobby").classList.add("hidden");
-    document.getElementById("painel-jogo").classList.remove("hidden");
-}
-
-function abrirMenuMultiplayer() {
-    document.getElementById("menu-principal-lobby").classList.add("hidden");
-    document.getElementById("menu-multiplayer-lobby").classList.remove("hidden");
-}
-
-function voltarMenuLobby() {
-    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
-    document.getElementById("menu-entrar-sala").classList.add("hidden");
-    document.getElementById("menu-principal-lobby").classList.remove("hidden");
-}
-
-function abrirEntrarSala() {
-    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
-    document.getElementById("menu-entrar-sala").classList.remove("hidden");
-}
-
-// GERA CÓDIGO DE 4 LETRAS/NÚMEROS
-function gerarCodigoSala() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-    return code;
-}
-
-// O HOST CRIA A SALA
-function criarSalaMultiplayer() {
-    const codigo = gerarCodigoSala();
-    salaAtual = codigo;
-    isHost = true;
-    
-    // Cria a sala no Firebase
-    db.ref('salas/' + codigo).set({
-        status: 'aguardando',
-        jogadores: {
-            [meuNomeMultiplayer]: { host: true }
-        }
-    }).then(() => {
-        entrarNaInterfaceDaSala();
-        escutarAlteracoesNaSala();
-    });
-}
-
-// O CONVIDADO ENTRA NA SALA
-function entrarSalaMultiplayer() {
-    const codigoInput = document.getElementById("input-codigo-sala").value.toUpperCase();
-    if(codigoInput.length !== 4) return alert("Código inválido!");
-
-    // Verifica se a sala existe no Firebase
-    db.ref('salas/' + codigoInput).once('value').then((snapshot) => {
-        if(snapshot.exists()) {
-            salaAtual = codigoInput;
-            isHost = false;
-            
-            // Adiciona o jogador novo na sala
-            db.ref(`salas/${salaAtual}/jogadores/${meuNomeMultiplayer}`).set({ host: false }).then(() => {
-                entrarNaInterfaceDaSala();
-                escutarAlteracoesNaSala();
-            });
-        } else {
-            alert("Sala não encontrada!");
-        }
-    });
-}
-
-// MUDA A TELA PARA A "SALA DE ESPERA"
-function entrarNaInterfaceDaSala() {
-    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
-    document.getElementById("menu-entrar-sala").classList.add("hidden");
-    document.getElementById("sala-de-espera").classList.remove("hidden");
-    
-    document.getElementById("codigo-sala-display").innerText = salaAtual;
-    
-    if(isHost) {
-        document.getElementById("btn-iniciar-partida-multi").classList.remove("hidden");
-    }
-}
-
-// FIREBASE: FICA DE OLHO QUEM ENTRA E QUEM SAI EM TEMPO REAL
-function escutarAlteracoesNaSala() {
-    db.ref('salas/' + salaAtual + '/jogadores').on('value', (snapshot) => {
-        const jogadores = snapshot.val();
-        if(!jogadores) return; // Sala vazia/deletada
-        
-        const listaHtml = document.getElementById("lista-jogadores-sala");
-        listaHtml.innerHTML = "";
-        
-        let qtd = 0;
-        for(let nome in jogadores) {
-            qtd++;
-            let badge = jogadores[nome].host ? '👑 ' : '';
-            let isMe = nome === meuNomeMultiplayer ? ' (Você)' : '';
-            listaHtml.innerHTML += `<div class="lobby-player-row">${badge}${nome}${isMe}</div>`;
-        }
-        
-        document.getElementById("status-jogadores-sala").innerText = `Jogadores na sala: ${qtd}/16`;
-    });
-}
-
-function sairDaSala() {
-    if(salaAtual) {
-        // Remove jogador do banco
-        db.ref(`salas/${salaAtual}/jogadores/${meuNomeMultiplayer}`).remove().then(() => {
-            // Se era o Host e ele saiu, talvez a gente delete a sala depois.
-            // Por enquanto só volta pra tela inicial.
-            salaAtual = null;
-            document.getElementById("sala-de-espera").classList.add("hidden");
-            document.getElementById("menu-principal-lobby").classList.remove("hidden");
-        });
-    }
-}
-
-function iniciarDraftMultiplayer() {
-    alert("Próxima Fase: Sincronizar o Draft! Aguarde os próximos códigos.");
-}
-
-// =========================================================================
-// O RESTO DO SEU CÓDIGO NORMAL (Singleplayer que já funciona) FICA AQUI 
-// =========================================================================
-
-// 1. BANCO DE TIMES (Insira todos aqui com cuidado)
 const textoBrutoDosTimes = `
 Time: Flamengo 2025
 Rossi, GOL, 84
@@ -3898,7 +3768,12 @@ Renato, ATA, 85
 Simão, PE, 86
 `;
 
+// ==========================================
+// 3. VARIÁVEIS GLOBAIS E DICIONÁRIO
+// ==========================================
 let elencosParaSorteio = []; 
+let todosJogadoresFlat = []; // Usado no Mercadão Multiplayer
+
 const TODAS_FORMACOES = {
     '4-3-3': { labels: ['GOL', 'LD', 'ZAG', 'ZAG', 'LE', 'VOL', 'MC', 'MEI', 'PE', 'ATA', 'PD'], posicoes: { GOL: [50,90], LD:[85,70], ZAG1:[65,72], ZAG2:[35,72], LE:[15,70], VOL:[50,55], MC:[30,48], MEI:[70,48], PE:[20,25], ATA:[50,15], PD:[80,25] } },
     '4-4-2': { labels: ['GOL', 'LD', 'ZAG', 'ZAG', 'LE', 'VOL', 'MC', 'ME', 'MD', 'ATA', 'ATA'], posicoes: { GOL: [50,90], LD:[85,70], ZAG1:[65,72], ZAG2:[35,72], LE:[15,70], VOL:[40,50], MC:[60,50], ME:[15,40], MD:[85,40], ATA1:[35,18], ATA2:[65,18] } },
@@ -3915,47 +3790,9 @@ const TODAS_FORMACOES = {
 const ORDEM_TATICA = ['GOL', 'LD', 'ZAG', 'LE', 'VOL', 'MC', 'ME', 'MD', 'MEI', 'PE', 'PD', 'SA', 'ATA'];
 
 const i18n = {
-    pt: { formation: "FORMAÇÃO", mode_diff: "MODO • DIFICULDADE", classic: "Clássico", roll_dice: "ROLAR DADO", rolling: "Rolando os dados...", drawn: "SAIU", reroll: "OUTRO SORTEIO", choose_player: "ESCOLHA UM JOGADOR", cancel: "CANCELAR AÇÃO", box_score: "BOX SCORE", total_ovr: "OVR TOTAL", attack: "ATAQUE", defense: "DEFESA", direct_result: "RESULTADO DIRETO", play_by_play: "LANCE A LANCE", advance: "AVANÇAR", stats: "ESTATÍSTICAS", cup_results: "CHAVEAMENTO", penalties: "PÊNALTIS", settings_btn: "AJUSTES ▾", theme: "Tema:", language: "Idioma:",
-        spin_again: "GIRAR NOVAMENTE", lifesaver: "SALVA-VIDAS", no_space: "SEM ESPAÇO! ROLAGEM DE EMERGÊNCIA.", rerolls_left: "NÃO CURTIU? {n} RESTANTES", no_rerolls: "SEM RESORTEIOS", ultimate_no_rerolls: "MODO ULTIMATE (0 RESORTEIOS)", click_pitch: "CLIQUE OBRIGATORIAMENTE NO CAMPO", time_out: "TEMPO ESGOTADO! Jogador aleatório escalado.", go_to_knockout: "IR PARA O MATA-MATA",
-        my_team: "MEU TIME", first_leg: "JOGO DE IDA", second_leg: "JOGO DE VOLTA", round_16: "OITAVAS DE FINAL", quarters: "QUARTAS DE FINAL", semis: "SEMI DE FINAL", final: "FINAL", waiting_ref: "Aguardando ordem do juiz...", ref_whistle: "Apita o árbitro! Bola rolando!<br>", goal_me: "GOOOOOOOL DO SEU TIME! {nome} guarda!", goal_cpu: "GOL DA CPU! {nome} marca!", near_miss: "Passou muito perto da trave!", end_90: "Fim dos 90 minutos regulamentares.", quick_sim_end: "Fim de jogo rápido!", agg: "AGR",
-        agg_tie: "TUDO IGUAL NO AGREGADO! VAMOS PARA OS PÊNALTIS!", pen_shootout: "DISPUTA DE PÊNALTIS", pen_end: "FIM DA DISPUTA DE PÊNALTIS!", pen_score: "Placar final: Seu Time {a} x {b} CPU.<br>",
-        eliminated: "ELIMINADO! Mas você pode ver toda a tabela final na aba ao lado!", advanced: "CLASSIFICADO EMOCIONANTE!", champion: "🏆 PARABÉNS! VOCÊ É O CAMPEÃO HISTÓRICO!", go_to_next: "IR PARA AS {fase}",
-        tba: "A definir", wait_goals: "Aguardando gols...", wait_assists: "Aguardando assist...", wait_cs: "Aguardando defesas...", sim_cpu_next: "SIMULAR PRÓXIMA FASE (CPU)", copy_perf: "📋 COPIAR DESEMPENHO", copied: "Texto copiado para a área de transferência!", play_again: "🔄 JOGAR NOVAMENTE", view_bracket: "📊 VER CHAVEAMENTO",
-        champ_desc: "Você esculpiu seu nome na história do futebol.", elim_desc: "A zebra solta não perdoa ninguém.",
-        artilharia: "⚽ ARTILHARIA", assistencias: "👟 ASSISTÊNCIAS", clean_sheets: "🧤 CLEAN SHEETS",
-        pos_GOL: "GOL", pos_LD: "LD", pos_ZAG: "ZAG", pos_LE: "LE", pos_VOL: "VOL", pos_MC: "MC", pos_ME: "ME", pos_MD: "MD", pos_MEI: "MEI", pos_PE: "PE", pos_PD: "PD", pos_SA: "SA", pos_ATA: "ATA", 
-        share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nTática: {tatic}\nOVR Total: {ovr}\n\n{result_text}\n\nEscalação:\n{lista_jogadores}\n\nJogue também: https://7a0-brasil.vercel.app",
-        share_champ: "🏆 CAMPEÃO! (Venceu o {adv} na Final)",
-        share_elim: "❌ ELIMINADO nas {fase} para o {adv}"
-    },
-    en: {
-        formation: "FORMATION", mode_diff: "MODE • DIFFICULTY", classic: "Classic", roll_dice: "ROLL DICE", rolling: "Rolling dice...", drawn: "DRAWN", reroll: "REROLL", choose_player: "CHOOSE A PLAYER", cancel: "CANCEL ACTION", box_score: "BOX SCORE", total_ovr: "TOTAL OVR", attack: "ATTACK", defense: "DEFENSE", direct_result: "QUICK SIM", play_by_play: "PLAY-BY-PLAY", advance: "ADVANCE", stats: "STATS", cup_results: "BRACKET", penalties: "SHOOTOUT", settings_btn: "SETTINGS ▾", theme: "Theme:", language: "Language:",
-        spin_again: "SPIN AGAIN", lifesaver: "LIFESAVER", no_space: "NO SPACE! EMERGENCY ROLL.", rerolls_left: "NOT HAPPY? {n} LEFT", no_rerolls: "NO REROLLS", ultimate_no_rerolls: "ULTIMATE MODE (0 REROLLS)", click_pitch: "YOU MUST CLICK ON THE PITCH", time_out: "TIME OUT! Random player assigned.", go_to_knockout: "GO TO KNOCKOUTS",
-        my_team: "MY TEAM", first_leg: "FIRST LEG", second_leg: "SECOND LEG", round_16: "ROUND OF 16", quarters: "QUARTER-FINALS", semis: "SEMI-FINALS", final: "FINAL", waiting_ref: "Waiting for the referee...", ref_whistle: "The referee whistles! We are underway!<br>", goal_me: "GOOOOOOOL FOR YOUR TEAM! {nome} scores!", goal_cpu: "CPU GOAL! {nome} scores!", near_miss: "A near miss! Very close!", end_90: "End of 90 minutes.", quick_sim_end: "Quick simulation finished!", agg: "AGG",
-        agg_tie: "TIED ON AGGREGATE! WE GO TO PENALTIES!", pen_shootout: "PENALTY SHOOTOUT", pen_end: "PENALTY SHOOTOUT ENDS!", pen_score: "Final Score: Your Team {a} x {b} CPU.<br>",
-        eliminated: "ELIMINATED! Check the rest of the bracket on the side tab!", advanced: "THRILLING QUALIFICATION!", champion: "🏆 CONGRATULATIONS! YOU ARE THE HISTORIC CHAMPION!", go_to_next: "GO TO {fase}",
-        tba: "TBD", wait_goals: "Waiting for goals...", wait_assists: "Waiting for assists...", wait_cs: "Waiting for clean sheets...", sim_cpu_next: "SIM NEXT ROUND (CPU)", copy_perf: "📋 COPY PERFORMANCE", copied: "Text copied to clipboard!", play_again: "🔄 PLAY AGAIN", view_bracket: "📊 VIEW BRACKET",
-        champ_desc: "You have carved your name in football history.", elim_desc: "The underdog spares no one.",
-        artilharia: "⚽ TOP SCORERS", assistencias: "👟 ASSISTS", clean_sheets: "🧤 CLEAN SHEETS",
-        pos_GOL: "GK", pos_LD: "RB", pos_ZAG: "CB", pos_LE: "LB", pos_VOL: "CDM", pos_MC: "CM", pos_ME: "LM", pos_MD: "RM", pos_MEI: "CAM", pos_PE: "LW", pos_PD: "RW", pos_SA: "CF", pos_ATA: "ST", 
-        share_text: "🏆 [7-0 BRAZIL - HISTORIC CUP]\n\nTactic: {tatic}\nTotal OVR: {ovr}\n\n{result_text}\n\nStarting XI:\n{lista_jogadores}\n\nPlay now: https://7a0-brasil.vercel.app",
-        share_champ: "🏆 CHAMPION! (Beat {adv} in the Final)",
-        share_elim: "❌ ELIMINATED in the {fase} by {adv}"
-    },
-    es: {
-        formation: "FORMACIÓN", mode_diff: "MODO • DIFICULTAD", classic: "Clásico", roll_dice: "LANZAR DADO", rolling: "Lanzando dados...", drawn: "SORTEADO", reroll: "OTRO SORTEO", choose_player: "ELIGE JUGADOR", cancel: "CANCELAR ACCIÓN", box_score: "BOX SCORE", total_ovr: "GRL TOTAL", attack: "ATAQUE", defense: "DEFENSA", direct_result: "RESULTADO RÁPIDO", play_by_play: "JUGADA A JUGADA", advance: "AVANZAR", stats: "ESTADÍSTICAS", cup_results: "CUADRO", penalties: "PENALES", settings_btn: "AJUSTES ▾", theme: "Tema:", language: "Idioma:",
-        spin_again: "GIRAR DE NUEVO", lifesaver: "SALVAVIDAS", no_space: "¡SIN ESPACIO! TIRO DE EMERGENCIA.", rerolls_left: "¿NO TE GUSTA? {n} RESTAN", no_rerolls: "SIN SORTEOS", ultimate_no_rerolls: "MODO ULTIMATE (0 SORTEOS)", click_pitch: "DEBES HACER CLIC EN EL CAMPO", time_out: "¡TIEMPO AGOTADO! Jugador aleatorio asignado.", go_to_knockout: "IR A ELIMINATORIAS",
-        my_team: "MI EQUIPO", first_leg: "PARTIDO DE IDA", second_leg: "PARTIDO DE VUELTA", round_16: "OCTAVOS DE FINAL", quarters: "CUARTOS DE FINAL", semis: "SEMIFINALES", final: "FINAL", waiting_ref: "Esperando al árbitro...", ref_whistle: "¡El árbitro pita! ¡Rueda la pelota!<br>", goal_me: "¡GOOOOOOOL DE TU EQUIPO! ¡{nome} anota!", goal_cpu: "¡GOL DE LA CPU! ¡{nome} marca!", near_miss: "¡Pasó rozando el poste!", end_90: "Fin de los 90 minutos.", quick_sim_end: "¡Simulación rápida finalizada!", agg: "GLO",
-        agg_tie: "¡EMPATE GLOBAL! ¡VAMOS A LOS PENALES!", pen_shootout: "TANDA DE PENALES", pen_end: "¡FIN DE LOS PENALES!", pen_score: "Marcador Final: Tu Equipo {a} x {b} CPU.<br>",
-        eliminated: "¡ELIMINADO! ¡Mira el resto del torneo en la pestaña lateral!", advanced: "¡CLASIFICACIÓN EMOCIONANTE!", champion: "🏆 ¡FELICIDADES! ¡ERES EL CAMPEÓN HISTÓRICO!", go_to_next: "IR A {fase}",
-        tba: "Por definir", wait_goals: "Esperando goles...", wait_assists: "Esperando asist...", wait_cs: "Esperando porterías a cero...", sim_cpu_next: "SIMULAR SIGUIENTE (CPU)", copy_perf: "📋 COPIAR DESEMPEÑO", copied: "¡Texto copiado al portapapeles!", play_again: "🔄 JUGAR DE NUEVO", view_bracket: "📊 VER CUADRO",
-        champ_desc: "Has esculpido tu nombre en la historia del fútbol.", elim_desc: "La sorpresa no perdona a nadie.",
-        artilharia: "⚽ GOLEADORES", assistencias: "👟 ASISTENCIAS", clean_sheets: "🧤 PORTERÍAS IMBATIDAS",
-        pos_GOL: "POR", pos_LD: "LD", pos_ZAG: "DFC", pos_LE: "LI", pos_VOL: "MCD", pos_MC: "MC", pos_ME: "MI", pos_MD: "MD", pos_MEI: "MCO", pos_PE: "EI", pos_PD: "ED", pos_SA: "SD", pos_ATA: "DC", 
-        share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nTáctica: {tatic}\nGRL Total: {ovr}\n\n{result_text}\n\nAlineación:\n{lista_jogadores}\n\nJuega tú también: https://7a0-brasil.vercel.app",
-        share_champ: "🏆 ¡CAMPEÓN! (Venció a {adv} en la Final)",
-        share_elim: "❌ ELIMINADO en {fase} por {adv}"
-    }
+    pt: { formation: "FORMAÇÃO", mode_diff: "MODO • DIFICULDADE", classic: "Clássico", roll_dice: "ROLAR DADO", rolling: "Rolando os dados...", drawn: "SAIU", reroll: "OUTRO SORTEIO", choose_player: "ESCOLHA UM JOGADOR", cancel: "CANCELAR AÇÃO", box_score: "BOX SCORE", total_ovr: "OVR TOTAL", attack: "ATAQUE", defense: "DEFESA", direct_result: "RESULTADO DIRETO", play_by_play: "LANCE A LANCE", advance: "AVANÇAR", stats: "ESTATÍSTICAS", cup_results: "CHAVEAMENTO", penalties: "PÊNALTIS", settings_btn: "AJUSTES ▾", theme: "Tema:", language: "Idioma:", spin_again: "GIRAR NOVAMENTE", lifesaver: "SALVA-VIDAS", no_space: "SEM ESPAÇO! ROLAGEM DE EMERGÊNCIA.", rerolls_left: "NÃO CURTIU? {n} RESTANTES", no_rerolls: "SEM RESORTEIOS", ultimate_no_rerolls: "MODO ULTIMATE (0 RESORTEIOS)", click_pitch: "CLIQUE OBRIGATORIAMENTE NO CAMPO", time_out: "TEMPO ESGOTADO! Jogador aleatório escalado.", go_to_knockout: "IR PARA O MATA-MATA", my_team: "MEU TIME", first_leg: "JOGO DE IDA", second_leg: "JOGO DE VOLTA", round_16: "OITAVAS DE FINAL", quarters: "QUARTAS DE FINAL", semis: "SEMI DE FINAL", final: "FINAL", waiting_ref: "Aguardando ordem do juiz...", ref_whistle: "Apita o árbitro! Bola rolando!<br>", goal_me: "GOOOOOOOL DO SEU TIME! {nome} guarda!", goal_cpu: "GOL DA CPU! {nome} marca!", near_miss: "Passou muito perto da trave!", end_90: "Fim dos 90 minutos regulamentares.", quick_sim_end: "Fim de jogo rápido!", agg: "AGR", agg_tie: "TUDO IGUAL NO AGREGADO! VAMOS PARA OS PÊNALTIS!", pen_shootout: "DISPUTA DE PÊNALTIS", pen_end: "FIM DA DISPUTA DE PÊNALTIS!", pen_score: "Placar final: Seu Time {a} x {b} CPU.<br>", eliminated: "ELIMINADO! Mas você pode ver toda a tabela final na aba ao lado!", advanced: "CLASSIFICADO EMOCIONANTE!", champion: "🏆 PARABÉNS! VOCÊ É O CAMPEÃO HISTÓRICO!", go_to_next: "IR PARA AS {fase}", tba: "A definir", wait_goals: "Aguardando gols...", wait_assists: "Aguardando assist...", wait_cs: "Aguardando defesas...", sim_cpu_next: "SIMULAR PRÓXIMA FASE (CPU)", copy_perf: "📋 COPIAR DESEMPENHO", copied: "Texto copiado para a área de transferência!", play_again: "🔄 JOGAR NOVAMENTE", view_bracket: "📊 VER CHAVEAMENTO", champ_desc: "Você esculpiu seu nome na história do futebol.", elim_desc: "A zebra solta não perdoa ninguém.", artilharia: "⚽ ARTILHARIA", assistencias: "👟 ASSISTÊNCIAS", clean_sheets: "🧤 CLEAN SHEETS", pos_GOL: "GOL", pos_LD: "LD", pos_ZAG: "ZAG", pos_LE: "LE", pos_VOL: "VOL", pos_MC: "MC", pos_ME: "ME", pos_MD: "MD", pos_MEI: "MEI", pos_PE: "PE", pos_PD: "PD", pos_SA: "SA", pos_ATA: "ATA", share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nTática: {tatic}\nOVR Total: {ovr}\n\n{result_text}\n\nEscalação:\n{lista_jogadores}\n\nJogue também: https://7a0-brasil.vercel.app", share_champ: "🏆 CAMPEÃO! (Venceu o {adv} na Final)", share_elim: "❌ ELIMINADO nas {fase} para o {adv}" },
+    en: { formation: "FORMATION", mode_diff: "MODE • DIFFICULTY", classic: "Classic", roll_dice: "ROLL DICE", rolling: "Rolling dice...", drawn: "DRAWN", reroll: "REROLL", choose_player: "CHOOSE A PLAYER", cancel: "CANCEL ACTION", box_score: "BOX SCORE", total_ovr: "TOTAL OVR", attack: "ATTACK", defense: "DEFENSE", direct_result: "QUICK SIM", play_by_play: "PLAY-BY-PLAY", advance: "ADVANCE", stats: "STATS", cup_results: "BRACKET", penalties: "SHOOTOUT", settings_btn: "SETTINGS ▾", theme: "Theme:", language: "Language:", spin_again: "SPIN AGAIN", lifesaver: "LIFESAVER", no_space: "NO SPACE! EMERGENCY ROLL.", rerolls_left: "NOT HAPPY? {n} LEFT", no_rerolls: "NO REROLLS", ultimate_no_rerolls: "ULTIMATE MODE (0 REROLLS)", click_pitch: "YOU MUST CLICK ON THE PITCH", time_out: "TIME OUT! Random player assigned.", go_to_knockout: "GO TO KNOCKOUTS", my_team: "MY TEAM", first_leg: "FIRST LEG", second_leg: "SECOND LEG", round_16: "ROUND OF 16", quarters: "QUARTER-FINALS", semis: "SEMI-FINALS", final: "FINAL", waiting_ref: "Waiting for the referee...", ref_whistle: "The referee whistles! We are underway!<br>", goal_me: "GOOOOOOOL FOR YOUR TEAM! {nome} scores!", goal_cpu: "CPU GOAL! {nome} scores!", near_miss: "A near miss! Very close!", end_90: "End of 90 minutes.", quick_sim_end: "Quick simulation finished!", agg: "AGG", agg_tie: "TIED ON AGGREGATE! WE GO TO PENALTIES!", pen_shootout: "PENALTY SHOOTOUT", pen_end: "PENALTY SHOOTOUT ENDS!", pen_score: "Final Score: Your Team {a} x {b} CPU.<br>", eliminated: "ELIMINATED! Check the rest of the bracket on the side tab!", advanced: "THRILLING QUALIFICATION!", champion: "🏆 CONGRATULATIONS! YOU ARE THE HISTORIC CHAMPION!", go_to_next: "GO TO {fase}", tba: "TBD", wait_goals: "Waiting for goals...", wait_assists: "Waiting for assists...", wait_cs: "Waiting for clean sheets...", sim_cpu_next: "SIM NEXT ROUND (CPU)", copy_perf: "📋 COPY PERFORMANCE", copied: "Text copied to clipboard!", play_again: "🔄 PLAY AGAIN", view_bracket: "📊 VIEW BRACKET", champ_desc: "You have carved your name in football history.", elim_desc: "The underdog spares no one.", artilharia: "⚽ TOP SCORERS", assistencias: "👟 ASSISTS", clean_sheets: "🧤 CLEAN SHEETS", pos_GOL: "GK", pos_LD: "RB", pos_ZAG: "CB", pos_LE: "LB", pos_VOL: "CDM", pos_MC: "CM", pos_ME: "LM", pos_MD: "RM", pos_MEI: "CAM", pos_PE: "LW", pos_PD: "RW", pos_SA: "CF", pos_ATA: "ST", share_text: "🏆 [7-0 BRAZIL - HISTORIC CUP]\n\nTactic: {tatic}\nTotal OVR: {ovr}\n\n{result_text}\n\nStarting XI:\n{lista_jogadores}\n\nPlay now: https://7a0-brasil.vercel.app", share_champ: "🏆 CHAMPION! (Beat {adv} in the Final)", share_elim: "❌ ELIMINATED in the {fase} by {adv}" },
+    es: { formation: "FORMACIÓN", mode_diff: "MODO • DIFICULTAD", classic: "Clásico", roll_dice: "LANZAR DADO", rolling: "Lanzando dados...", drawn: "SORTEADO", reroll: "OTRO SORTEO", choose_player: "ELIGE JUGADOR", cancel: "CANCELAR ACCIÓN", box_score: "BOX SCORE", total_ovr: "GRL TOTAL", attack: "ATAQUE", defense: "DEFENSA", direct_result: "RESULTADO RÁPIDO", play_by_play: "JUGADA A JUGADA", advance: "AVANZAR", stats: "ESTADÍSTICAS", cup_results: "CUADRO", penalties: "PENALES", settings_btn: "AJUSTES ▾", theme: "Tema:", language: "Idioma:", spin_again: "GIRAR DE NUEVO", lifesaver: "SALVAVIDAS", no_space: "¡SIN ESPACIO! TIRO DE EMERGENCIA.", rerolls_left: "¿NO TE GUSTA? {n} RESTAN", no_rerolls: "SIN SORTEOS", ultimate_no_rerolls: "MODO ULTIMATE (0 SORTEOS)", click_pitch: "DEBES HACER CLIC EN EL CAMPO", time_out: "¡TIEMPO AGOTADO! Jugador aleatorio asignado.", go_to_knockout: "IR A ELIMINATORIAS", my_team: "MI EQUIPO", first_leg: "PARTIDO DE IDA", second_leg: "PARTIDO DE VUELTA", round_16: "OCTAVOS DE FINAL", quarters: "CUARTOS DE FINAL", semis: "SEMIFINALES", final: "FINAL", waiting_ref: "Esperando al árbitro...", ref_whistle: "¡El árbitro pita! ¡Rueda la pelota!<br>", goal_me: "¡GOOOOOOOL DE TU EQUIPO! ¡{nome} anota!", goal_cpu: "¡GOL DE LA CPU! ¡{nome} marca!", near_miss: "¡Pasó rozando el poste!", end_90: "Fin de los 90 minutos.", quick_sim_end: "¡Simulación rápida finalizada!", agg: "GLO", agg_tie: "¡EMPATE GLOBAL! ¡VAMOS A LOS PENALES!", pen_shootout: "TANDA DE PENALES", pen_end: "¡FIN DE LOS PENALES!", pen_score: "Marcador Final: Tu Equipo {a} x {b} CPU.<br>", eliminated: "¡ELIMINADO! ¡Mira el resto del torneo en la pestaña lateral!", advanced: "¡CLASIFICACIÓN EMOCIONANTE!", champion: "🏆 ¡FELICIDADES! ¡ERES EL CAMPEÓN HISTÓRICO!", go_to_next: "IR A {fase}", tba: "Por definir", wait_goals: "Esperando goles...", wait_assists: "Esperando asist...", wait_cs: "Esperando porterías a cero...", sim_cpu_next: "SIMULAR SIGUIENTE (CPU)", copy_perf: "📋 COPIAR DESEMPEÑO", copied: "¡Texto copiado al portapapeles!", play_again: "🔄 JUGAR DE NUEVO", view_bracket: "📊 VER CUADRO", champ_desc: "Has esculpido tu nombre en la historia del fútbol.", elim_desc: "La sorpresa no perdona a nadie.", artilharia: "⚽ GOLEADORES", assistencias: "👟 ASISTENCIAS", clean_sheets: "🧤 PORTERÍAS IMBATIDAS", pos_GOL: "POR", pos_LD: "LD", pos_ZAG: "DFC", pos_LE: "LI", pos_VOL: "MCD", pos_MC: "MC", pos_ME: "MI", pos_MD: "MD", pos_MEI: "MCO", pos_PE: "EI", pos_PD: "ED", pos_SA: "SD", pos_ATA: "DC", share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nTáctica: {tatic}\nGRL Total: {ovr}\n\n{result_text}\n\nAlineación:\n{lista_jogadores}\n\nJuega tú también: https://7a0-brasil.vercel.app", share_champ: "🏆 ¡CAMPEÓN! (Venció a {adv} en la Final)", share_elim: "❌ ELIMINADO en {fase} por {adv}" }
 };
 
 let currentLang = 'pt';
@@ -3964,9 +3801,26 @@ function t(key, params = {}) {
     for (let p in params) text = text.replace(`{${p}}`, params[p]);
     return text;
 }
+function gerarIdJogador(jogador) { return `${jogador.nome}_${jogador.timeOrigem}`; }
+function verificarSeECloneDoElenco(jogador) { return Object.values(meuTime).some(j => j.nome === jogador.nome && j.posicoes.some(p => jogador.posicoes.includes(p))); }
+
+// Variáveis Lógicas Singleplayer/Torneio
+let meuTime = {}; let meuTimeIds = new Set(); let formacaoAtual = '4-3-3'; let resorteiosRestantes = 3; let modoUltimate = false; let faseDePlacement = false; let jogadorSendoPosicionado = null; let timeSorteadoAtual = null; let roletaAnimando = false; let jogoIniciado = false; 
+let draftTimer; let timeLeft = 30;
+let statsCopa = { artilheiros: {}, garcons: {}, cleanSheets: {} }; let poolEquipesCopa = []; let chavesChampionship = { 'OITAVAS': [], 'QUARTAS': [], 'SEMI': [], 'FINAL': [] }; 
+let partidaAtual = { fase: 'OITAVAS', jogo: 1, golsMeus: 0, golsCpu: 0, agregadoMeus: 0, agregadoCpu: 0 }; let cpuAtual = null; let meuOvrTorneio = 0; let narracaoInterval = null;
+let eventosPartidaAtual = { meuTime: { gols: {}, assistencias: {} }, cpu: { gols: {}, assistencias: {} } };
+let playerEliminado = false; let torneioFinalizado = false;
+
+// Variáveis Multiplayer
+let salaAtual = null; let meuNomeMultiplayer = ""; let isHost = false; let isMultiplayer = false;
+let ordemTurnos = []; let turnoAtualIndex = 0; let jogadoresRoubados = {}; 
 
 processarBancoDeDados(); desenharFormacao(); atualizarBoxScore();
 
+// ==========================================
+// 4. CONFIGURAÇÕES VISUAIS E TRADUÇÃO
+// ==========================================
 function toggleSettings() { document.getElementById("settings-dropdown").classList.toggle("hidden"); }
 function toggleTheme() { const body = document.querySelector('.app-layout'); body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark'; }
 
@@ -3990,15 +3844,193 @@ function updateDynamicTexts() {
     document.getElementById("fase-torneio").innerText = t(mapFases[partidaAtual.fase] || partidaAtual.fase);
     document.getElementById("info-ida-volta").innerText = partidaAtual.jogo === 1 ? t("first_leg") : t("second_leg");
     document.getElementById("sim-agregado").innerText = `${t("agg")}: ${partidaAtual.agregadoMeus} - ${partidaAtual.agregadoCpu}`;
-    
     desenharFormacao(); atualizarBoxScore();
-    if(cpuAtual) { 
-        renderizarEscalacoesPainel(); 
-        renderizarRankingsCopa(); 
-        renderizarBracket();
+    if(cpuAtual) { renderizarEscalacoesPainel(); renderizarRankingsCopa(); renderizarBracket(); }
+}
+
+// ==========================================
+// 5. TELA DE LOBBY (CRIAR E ENTRAR EM SALA)
+// ==========================================
+function pegarOuGerarNome() {
+    let nomeInput = document.getElementById("input-nickname").value.trim().toUpperCase();
+    if(nomeInput === "") nomeInput = "JOGADOR_" + Math.floor(Math.random() * 1000);
+    return nomeInput;
+}
+
+function iniciarSingleplayer() {
+    isMultiplayer = false;
+    document.getElementById("tela-lobby").classList.add("hidden");
+    document.getElementById("painel-jogo").classList.remove("hidden");
+}
+
+function abrirMenuMultiplayer() {
+    document.getElementById("menu-principal-lobby").classList.add("hidden");
+    document.getElementById("menu-multiplayer-lobby").classList.remove("hidden");
+}
+
+function voltarMenuLobby() {
+    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
+    document.getElementById("menu-entrar-sala").classList.add("hidden");
+    document.getElementById("menu-principal-lobby").classList.remove("hidden");
+}
+
+function abrirEntrarSala() {
+    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
+    document.getElementById("menu-entrar-sala").classList.remove("hidden");
+}
+
+function gerarCodigoSala() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let code = '';
+    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+    return code;
+}
+
+function criarSalaMultiplayer() {
+    meuNomeMultiplayer = pegarOuGerarNome();
+    const codigo = gerarCodigoSala();
+    salaAtual = codigo; isHost = true; isMultiplayer = true;
+    
+    db.ref('salas/' + codigo).set({
+        status: 'aguardando',
+        jogadores: { [meuNomeMultiplayer]: { host: true } },
+        jogadoresEscolhidos: {}
+    }).then(() => {
+        entrarNaInterfaceDaSala(); escutarAlteracoesNaSala(); escutarInicioDoDraft();
+    });
+}
+
+function entrarSalaMultiplayer() {
+    const codigoInput = document.getElementById("input-codigo-sala").value.toUpperCase();
+    if(codigoInput.length !== 4) return alert("Código inválido!");
+    meuNomeMultiplayer = pegarOuGerarNome();
+
+    db.ref('salas/' + codigoInput).once('value').then((snapshot) => {
+        if(snapshot.exists()) {
+            let salaData = snapshot.val();
+            if(salaData.status !== 'aguardando') return alert("Esta sala já está em andamento!");
+            if(salaData.jogadores && salaData.jogadores[meuNomeMultiplayer]) return alert("Já existe alguém com esse Nickname na sala!");
+
+            salaAtual = codigoInput; isHost = false; isMultiplayer = true;
+            db.ref(`salas/${salaAtual}/jogadores/${meuNomeMultiplayer}`).set({ host: false }).then(() => {
+                entrarNaInterfaceDaSala(); escutarAlteracoesNaSala(); escutarInicioDoDraft();
+            });
+        } else alert("Sala não encontrada!");
+    });
+}
+
+function entrarNaInterfaceDaSala() {
+    document.getElementById("menu-multiplayer-lobby").classList.add("hidden");
+    document.getElementById("menu-entrar-sala").classList.add("hidden");
+    document.getElementById("sala-de-espera").classList.remove("hidden");
+    document.getElementById("codigo-sala-display").innerText = salaAtual;
+    if(isHost) document.getElementById("btn-iniciar-partida-multi").classList.remove("hidden");
+}
+
+function escutarAlteracoesNaSala() {
+    db.ref('salas/' + salaAtual + '/jogadores').on('value', (snapshot) => {
+        const jogadores = snapshot.val(); if(!jogadores) return;
+        const listaHtml = document.getElementById("lista-jogadores-sala"); listaHtml.innerHTML = "";
+        let qtd = 0; ordemTurnos = [];
+        for(let nome in jogadores) {
+            qtd++; ordemTurnos.push(nome);
+            let badge = jogadores[nome].host ? '👑 ' : '';
+            let isMe = nome === meuNomeMultiplayer ? ' (Você)' : '';
+            listaHtml.innerHTML += `<div class="lobby-player-row">${badge}${nome}${isMe}</div>`;
+        }
+        document.getElementById("status-jogadores-sala").innerText = `Jogadores na sala: ${qtd}/16`;
+    });
+}
+
+function sairDaSala() {
+    if(salaAtual) {
+        db.ref(`salas/${salaAtual}/jogadores/${meuNomeMultiplayer}`).remove().then(() => {
+            salaAtual = null; isMultiplayer = false;
+            document.getElementById("sala-de-espera").classList.add("hidden");
+            document.getElementById("menu-principal-lobby").classList.remove("hidden");
+        });
     }
 }
 
+// ==========================================
+// 6. DRAFT MULTIPLAYER SINCRONIZADO (Fase 2)
+// ==========================================
+function iniciarDraftMultiplayer() {
+    if(!isHost) return;
+    db.ref('salas/' + salaAtual).update({ status: 'drafting', ordemTurnos: ordemTurnos, turnoAtualIndex: 0 });
+}
+
+function escutarInicioDoDraft() {
+    db.ref('salas/' + salaAtual + '/status').on('value', (snapshot) => {
+        if(snapshot.val() === 'drafting') prepararTelaDraftMulti();
+    });
+}
+
+function prepararTelaDraftMulti() {
+    document.getElementById("tela-lobby").classList.add("hidden");
+    document.getElementById("painel-jogo").classList.remove("hidden");
+    document.getElementById("view-config").classList.add("hidden");
+    document.getElementById("view-draft").classList.remove("hidden");
+    
+    document.getElementById("bloco-resorteio").style.display = "none"; 
+    document.getElementById("nome-time-sorteado").innerText = "MERCADÃO GLOBAL";
+    document.getElementById("lbl-draft-origem").innerText = "DISPONÍVEIS";
+    document.getElementById("multiplayer-status-box").classList.remove("hidden");
+    
+    escutarTurnosEJogadoresRoubados();
+}
+
+function escutarTurnosEJogadoresRoubados() {
+    db.ref('salas/' + salaAtual + '/turnoAtualIndex').on('value', (snapshot) => {
+        turnoAtualIndex = snapshot.val() || 0;
+        db.ref('salas/' + salaAtual + '/ordemTurnos').once('value').then((s) => {
+            ordemTurnos = s.val() || [];
+            let jogadorDaVez = ordemTurnos[turnoAtualIndex % ordemTurnos.length];
+            const avisoBox = document.getElementById("multiplayer-status-box");
+            const avisoTxt = document.getElementById("txt-turno-atual");
+            
+            if(jogadorDaVez === meuNomeMultiplayer) {
+                avisoBox.style.backgroundColor = "rgba(76, 175, 80, 0.1)"; avisoBox.style.borderColor = "var(--green)"; avisoBox.style.boxShadow = "0 0 15px var(--green)";
+                avisoTxt.style.color = "var(--green)"; avisoTxt.innerText = "Sua Vez! Escolha um jogador.";
+                document.getElementById("lista-jogadores-draft").style.pointerEvents = "auto";
+                document.getElementById("lista-jogadores-draft").style.opacity = "1";
+            } else {
+                avisoBox.style.backgroundColor = "rgba(243, 156, 18, 0.1)"; avisoBox.style.borderColor = "var(--gold)"; avisoBox.style.boxShadow = "0 0 15px var(--gold)";
+                avisoTxt.style.color = "var(--gold)"; avisoTxt.innerText = "Aguarde: Turno de " + jogadorDaVez;
+                document.getElementById("lista-jogadores-draft").style.pointerEvents = "none"; 
+                document.getElementById("lista-jogadores-draft").style.opacity = "0.4"; 
+                cancelPlacement();
+            }
+        });
+    });
+
+    db.ref('salas/' + salaAtual + '/jogadoresEscolhidos').on('value', (snapshot) => {
+        jogadoresRoubados = snapshot.val() || {};
+        if(isMultiplayer) renderizarMercadaoMultiplayer();
+    });
+}
+
+function renderizarMercadaoMultiplayer() {
+    const container = document.getElementById("lista-jogadores-draft"); container.innerHTML = ""; 
+    elencosParaSorteio.forEach(time => {
+        time.elenco.forEach((jogador) => {
+            const idUnico = gerarIdJogador(jogador);
+            if(jogadoresRoubados[idUnico]) return; // Roubado!
+            
+            const slotsValidos = obterSlotsValidos(jogador.posicoes); const temEspaco = slotsValidos.length > 0;
+            let rowClass = "player-row"; let onclick = "";
+
+            if (!temEspaco) rowClass += " blocked"; 
+            else { const safeData = JSON.stringify(jogador).replace(/"/g, '&quot;'); onclick = `selectForPlacement(${safeData}, this)`; }
+            
+            let posTraduzidas = jogador.posicoes.map(p => t('pos_'+p) || p).join('/');
+            container.innerHTML += `<div class="${rowClass}" onclick="${onclick}"><span class="p-name">${jogador.nome} <span style="font-size: 10px; color: var(--text-secondary);">(${jogador.timeOrigem})</span></span><span class="p-pos">${posTraduzidas}</span><span class="p-ovr">${jogador.overall}</span></div>`;
+        });
+    });
+}
+
+// ==========================================
+// 7. LÓGICA CORE: DRAFT E CAMPINHO
+// ==========================================
 function processarBancoDeDados() {
     elencosParaSorteio = []; 
     const blocosDeTimes = textoBrutoDosTimes.split("Time:").filter(bloco => bloco.trim() !== "");
@@ -4018,6 +4050,8 @@ function processarBancoDeDados() {
             if (jogadores.length > 0) elencosParaSorteio.push({ nome: nomeDoTime, elenco: jogadores });
         }
     });
+    todosJogadoresFlat = [];
+    elencosParaSorteio.forEach(t => t.elenco.forEach(j => todosJogadoresFlat.push(j)));
 }
 
 function mudarFormacao(novaFormacao, botaoElemento) {
@@ -4041,7 +4075,7 @@ function desenharFormacao() {
         const slotDiv = document.createElement("div"); slotDiv.className = "field-slot"; slotDiv.id = `slot-${key}`;
         if (meuTime[key]) {
             slotDiv.classList.add("filled"); const partesNome = meuTime[key].nome.split(' '); const nomeCurto = partesNome.length > 1 ? partesNome[partesNome.length - 1] : meuTime[key].nome;
-            if (modoUltimate) slotDiv.innerHTML = `<span class="pos-only">${label}</span><span class="player-pitch-name">${nomeCurto}</span>`;
+            if (modoUltimate && !isMultiplayer) slotDiv.innerHTML = `<span class="pos-only">${label}</span><span class="player-pitch-name">${nomeCurto}</span>`;
             else slotDiv.innerHTML = `<span class="ovr-only">${meuTime[key].overall}</span><span class="player-pitch-name">${nomeCurto}</span>`;
         } else slotDiv.innerText = label;
         slotDiv.style.left = `${x}%`; slotDiv.style.top = `${y}%`; fieldArea.appendChild(slotDiv);
@@ -4049,7 +4083,7 @@ function desenharFormacao() {
 }
 
 function iniciarTimerUltimate() {
-    if(!modoUltimate) return;
+    if(!modoUltimate || isMultiplayer) return;
     document.getElementById("timer-box").classList.remove("hidden");
     timeLeft = 30; document.getElementById("timer-sec").innerText = timeLeft;
     clearInterval(draftTimer);
@@ -4064,7 +4098,6 @@ function forcarSorteioAleatorio() {
     const def = TODAS_FORMACOES[formacaoAtual]; const posKeys = Object.keys(def.posicoes);
     let slotsVazios = posKeys.filter(k => !meuTime[k]); if(slotsVazios.length === 0) return;
     let slotAlvo = slotsVazios[0]; let labelAlvo = def.labels[posKeys.indexOf(slotAlvo)];
-    
     let jogadoresPossiveis = [];
     elencosParaSorteio.forEach(time => { time.elenco.forEach(jog => { if(jog.posicoes.includes(labelAlvo) && !verificarSeECloneDoElenco(jog)) jogadoresPossiveis.push(jog); }); });
     if(jogadoresPossiveis.length > 0) placePlayerInSlot(slotAlvo, jogadoresPossiveis[Math.floor(Math.random() * jogadoresPossiveis.length)]);
@@ -4118,7 +4151,19 @@ function finalizarSorteio() {
         if (resorteiosRestantes > 0) { btnResorteio.disabled = false; btnResorteio.innerText = t("reroll"); lblResorteio.innerText = t("rerolls_left", {n: resorteiosRestantes}); } 
         else { btnResorteio.disabled = true; btnResorteio.innerText = t("no_rerolls"); lblResorteio.innerText = modoUltimate ? t("ultimate_no_rerolls") : t("no_rerolls"); }
     }
-    renderizarListaDeJogadores(); roletaAnimando = false; iniciarTimerUltimate();
+    
+    const container = document.getElementById("lista-jogadores-draft"); container.innerHTML = ""; 
+    timeSorteadoAtual.elenco.forEach((jogador) => {
+        const isDuplicate = verificarSeECloneDoElenco(jogador);
+        const slotsValidos = obterSlotsValidos(jogador.posicoes); const temEspaco = slotsValidos.length > 0;
+        let rowClass = "player-row"; let onclick = "";
+        if (isDuplicate) rowClass += " duplicate"; else if (!temEspaco) rowClass += " blocked"; 
+        else { const safeData = JSON.stringify(jogador).replace(/"/g, '&quot;'); onclick = `selectForPlacement(${safeData}, this)`; }
+        const valorOvr = modoUltimate ? '?' : jogador.overall; 
+        let posTraduzidas = jogador.posicoes.map(p => t('pos_'+p) || p).join('/');
+        container.innerHTML += `<div class="${rowClass}" onclick="${onclick}"><span class="p-name">${jogador.nome}</span><span class="p-pos">${posTraduzidas}</span><span class="p-ovr">${valorOvr}</span></div>`;
+    });
+    roletaAnimando = false; iniciarTimerUltimate();
 }
 
 function obterSlotsValidos(posicoesJogador) {
@@ -4128,22 +4173,6 @@ function obterSlotsValidos(posicoesJogador) {
         if (!meuTime[key] && posicoesJogador.includes(label)) slotsValidos.push(key);
     }
     return slotsValidos;
-}
-
-function renderizarListaDeJogadores() {
-    const container = document.getElementById("lista-jogadores-draft"); container.innerHTML = ""; 
-    timeSorteadoAtual.elenco.forEach((jogador) => {
-        const isDuplicate = verificarSeECloneDoElenco(jogador);
-        const slotsValidos = obterSlotsValidos(jogador.posicoes); const temEspaco = slotsValidos.length > 0;
-        let rowClass = "player-row"; let onclick = "";
-
-        if (isDuplicate) rowClass += " duplicate"; else if (!temEspaco) rowClass += " blocked"; 
-        else { const safeData = JSON.stringify(jogador).replace(/"/g, '&quot;'); onclick = `selectForPlacement(${safeData}, this)`; }
-        const valorOvr = modoUltimate ? '?' : jogador.overall; 
-        
-        let posTraduzidas = jogador.posicoes.map(p => t('pos_'+p)).join('/');
-        container.innerHTML += `<div class="${rowClass}" onclick="${onclick}"><span class="p-name">${jogador.nome}</span><span class="p-pos">${posTraduzidas}</span><span class="p-ovr">${valorOvr}</span></div>`;
-    });
 }
 
 function selectForPlacement(playerData, element) {
@@ -4168,12 +4197,31 @@ function cancelPlacement() {
 }
 
 function placePlayerInSlot(slotId, playerData) {
-    meuTime[slotId] = playerData; meuTimeIds.add(gerarIdJogador(playerData)); 
-    clearInterval(draftTimer); document.getElementById("timer-box").classList.add("hidden");
-    desenharFormacao(); atualizarBoxScore(); cancelPlacement();
-    document.getElementById("view-draft").classList.add("hidden"); document.getElementById("view-config").classList.remove("hidden");
-    if (Object.keys(meuTime).length === Object.keys(TODAS_FORMACOES[formacaoAtual].posicoes).length) {
-        document.getElementById("btn-roleta").innerText = t("go_to_knockout"); document.getElementById("btn-roleta").onclick = prepararTorneio; 
+    if(isMultiplayer) {
+        let idGlobal = gerarIdJogador(playerData);
+        db.ref(`salas/${salaAtual}/jogadoresEscolhidos/${idGlobal}`).set(meuNomeMultiplayer).then(() => {
+            meuTime[slotId] = playerData; 
+            desenharFormacao(); atualizarBoxScore(); cancelPlacement();
+            
+            db.ref('salas/' + salaAtual + '/turnoAtualIndex').once('value').then(s => {
+                let turnoAnterior = s.val() || 0;
+                db.ref('salas/' + salaAtual + '/turnoAtualIndex').set(turnoAnterior + 1);
+            });
+            
+            if (Object.keys(meuTime).length === Object.keys(TODAS_FORMACOES[formacaoAtual].posicoes).length) {
+                document.getElementById("txt-turno-atual").innerText = "ELENCO COMPLETO!";
+                document.getElementById("lista-jogadores-draft").style.pointerEvents = "none";
+                document.getElementById("lista-jogadores-draft").style.opacity = "0.4";
+            }
+        });
+    } else {
+        meuTime[slotId] = playerData; meuTimeIds.add(gerarIdJogador(playerData)); 
+        clearInterval(draftTimer); document.getElementById("timer-box").classList.add("hidden");
+        desenharFormacao(); atualizarBoxScore(); cancelPlacement();
+        document.getElementById("view-draft").classList.add("hidden"); document.getElementById("view-config").classList.remove("hidden");
+        if (Object.keys(meuTime).length === Object.keys(TODAS_FORMACOES[formacaoAtual].posicoes).length) {
+            document.getElementById("btn-roleta").innerText = t("go_to_knockout"); document.getElementById("btn-roleta").onclick = prepararTorneio; 
+        }
     }
 }
 
@@ -4188,17 +4236,17 @@ function atualizarBoxScore() {
         if (meuTime[key]) {
             const over = meuTime[key].overall; somaTotal += over; countTotal++;
             if (posicoesDefensivas.includes(label)) { somaDefesa += over; countDefesa++; } else { somaAtaque += over; countAtaque++; }
-            const displayOvrBox = modoUltimate ? '?' : over;
+            const displayOvrBox = modoUltimate && !isMultiplayer ? '?' : over;
             list.innerHTML += `<div class="boxscore-row"><strong>${t('pos_'+label)}</strong> <span>${meuTime[key].nome}</span> <strong>${displayOvrBox}</strong></div>`;
         } else list.innerHTML += `<div class="boxscore-row"><strong>${t('pos_'+label)}</strong> <span>—</span> —</div>`;
     }
-    document.getElementById("val-ovr-total").innerText = modoUltimate && countTotal > 0 ? '?' : (countTotal > 0 ? Math.floor(somaTotal / countTotal) : 0);
-    document.getElementById("val-ovr-ataque").innerText = modoUltimate && countAtaque > 0 ? '?' : (countAtaque > 0 ? Math.floor(somaAtaque / countAtaque) : 0);
-    document.getElementById("val-ovr-defesa").innerText = modoUltimate && countDefesa > 0 ? '?' : (countDefesa > 0 ? Math.floor(somaDefesa / countDefesa) : 0);
+    document.getElementById("val-ovr-total").innerText = modoUltimate && countTotal > 0 && !isMultiplayer ? '?' : (countTotal > 0 ? Math.floor(somaTotal / countTotal) : 0);
+    document.getElementById("val-ovr-ataque").innerText = modoUltimate && countAtaque > 0 && !isMultiplayer ? '?' : (countAtaque > 0 ? Math.floor(somaAtaque / countAtaque) : 0);
+    document.getElementById("val-ovr-defesa").innerText = modoUltimate && countDefesa > 0 && !isMultiplayer ? '?' : (countDefesa > 0 ? Math.floor(somaDefesa / countDefesa) : 0);
 }
 
 // ==========================================
-// MATA-MATA
+// 8. O MATA-MATA (TORNEIO)
 // ==========================================
 
 function mudarAbaStats(aba) {
@@ -4596,7 +4644,7 @@ function copiarPerformance() {
         let j = meuTime[key];
         if(j) {
             let posText = t('pos_'+def.labels[i]);
-            listaJogadores += `- ${posText}: ${j.nome} (${j.timeOrigem}) | OVR ${modoUltimate ? '?' : j.overall}\n`;
+            listaJogadores += `- ${posText}: ${j.nome} (${j.timeOrigem}) | OVR ${modoUltimate && !isMultiplayer ? '?' : j.overall}\n`;
         }
     });
 
@@ -4617,21 +4665,5 @@ function copiarPerformance() {
 }
 
 function recomecarJogoDoZero() {
-    meuTime = {}; meuTimeIds = new Set(); faseDePlacement = false; jogadorSendoPosicionado = null; timeSorteadoAtual = null; roletaAnimando = false; jogoIniciado = false; playerEliminado = false; torneioFinalizado = false;
-    resorteiosRestantes = modoUltimate ? 0 : 3;
-    statsCopa = { artilheiros: {}, garcons: {}, cleanSheets: {} }; poolEquipesCopa = []; chavesChampionship = { 'OITAVAS': [], 'QUARTAS': [], 'SEMI': [], 'FINAL': [] };
-    partidaAtual = { fase: 'OITAVAS', jogo: 1, golsMeus: 0, golsCpu: 0, agregadoMeus: 0, agregadoCpu: 0 }; cpuAtual = null; meuOvrTorneio = 0;
-    if(narracaoInterval) clearInterval(narracaoInterval); if(draftTimer) clearInterval(draftTimer);
-
-    document.getElementById("modal-fim-jogo").classList.add("hidden"); document.getElementById("view-mata-mata").classList.add("hidden"); 
-    document.getElementById("layout-torneio-mestre").classList.remove("full-bracket"); document.getElementById("tela-tabuleiro").style.setProperty("display", "flex", "important");
-    document.getElementById("view-config").classList.remove("hidden"); document.getElementById("config-options").style.display = "block";
-    document.getElementById("view-draft").classList.add("hidden"); document.getElementById("animacao-sorteio").classList.add("hidden"); document.getElementById("draft-content").classList.remove("hidden");
-    
-    document.getElementById("btn-roleta").innerText = t("roll_dice"); 
-    document.getElementById("btn-roleta").onclick = girarRoleta; document.getElementById("container-btn-rolar").style.marginTop = "auto";
-    
-    document.getElementById("btn-avancar-fase").classList.add("hidden"); document.getElementById("btn-restart-bracket").classList.add("hidden");
-    
-    mudarAbaStats('stats'); desenharFormacao(); atualizarBoxScore(); updateDynamicTexts();
+    location.reload();
 }
