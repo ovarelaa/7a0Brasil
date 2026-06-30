@@ -228,3 +228,34 @@ button:hover:not(.active):not(:disabled) { background-color: rgba(243, 156, 18, 
     .actions-group { flex-direction: column; width: 100%; align-items: center; }
     .btn-secundario-sim, .btn-rolar-big-sim { width: 100%; max-width: 300px; }
 }
+/* =======================================================
+   ESTILOS DO LOBBY MULTIPLAYER (Fase 1)
+   ======================================================= */
+.tela-lobby {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh; height: 100dvh;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+.lobby-box {
+    background-color: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.lobby-player-row {
+    padding: 8px;
+    border-bottom: 1px solid var(--panel-border);
+    color: var(--text-primary);
+}
+.lobby-player-row:last-child {
+    border-bottom: none;
+}
