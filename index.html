@@ -20,6 +20,8 @@
             </div>
 
             <div id="menu-multiplayer-lobby" class="hidden">
+                <input type="text" id="input-nickname" placeholder="DIGITE SEU NICKNAME" maxlength="12" style="width: 100%; padding: 15px; font-size: 16px; text-align: center; font-weight: bold; text-transform: uppercase; background: var(--darker-bg); border: 1px solid var(--gold); color: var(--gold); border-radius: 6px; margin-bottom: 20px;">
+                
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                     <button class="btn-rolar-big-sim" onclick="criarSalaMultiplayer()" style="flex: 1; font-size: 14px;">➕ CRIAR SALA</button>
                     <button class="btn-secundario-sim" onclick="abrirEntrarSala()" style="flex: 1; font-size: 14px;">🚪 ENTRAR</button>
@@ -51,27 +53,20 @@
                 <h1 id="mf-titulo">CAMPEÃO!</h1>
                 <p id="mf-desc" data-i18n="champ_desc">Sua performance foi gravada na história.</p>
                 <div class="modal-botoes">
-                    <button class="btn-secundario-sim" onclick="copiarPerformance()" data-i18n="copy_perf">📋 COPIAR DESEMPENHO</button>
-                    <button class="btn-secundario-sim" onclick="fecharModalEVerResultados()" data-i18n="view_bracket">📊 VER CHAVEAMENTO</button>
+                    <button class="btn-secundario-sim" onclick="copiarPerformance()" data-i18n="copy_perf">📋 COPIAR</button>
+                    <button class="btn-secundario-sim" onclick="fecharModalEVerResultados()" data-i18n="view_bracket">📊 CHAVEAMENTO</button>
                     <button class="btn-rolar-big-sim" onclick="recomecarJogoDoZero()" data-i18n="play_again">🔄 JOGAR NOVAMENTE</button>
                 </div>
             </div>
         </div>
 
         <header class="app-header">
-            <div class="logo">
-                <span class="logo-7">7</span><span class="logo-0">-0</span><span class="logo-brasil"> BRASIL</span>
-            </div>
-            <div class="header-info">
-                <span id="config-tactic">4-3-3</span> <span class="dot">•</span> <span id="config-mode" data-i18n="classic">CLÁSSICO</span>
-            </div>
+            <div class="logo"><span class="logo-7">7</span><span class="logo-0">-0</span><span class="logo-brasil"> BRASIL</span></div>
+            <div class="header-info"><span id="config-tactic">4-3-3</span> <span class="dot">•</span> <span id="config-mode" data-i18n="classic">CLÁSSICO</span></div>
             <div class="settings-menu">
                 <button class="btn-adjust" onclick="toggleSettings()" data-i18n="settings_btn">AJUSTES ▾</button>
                 <div id="settings-dropdown" class="dropdown-content hidden">
-                    <div class="set-row">
-                        <span data-i18n="theme">Tema:</span>
-                        <button class="btn-theme-toggle" onclick="toggleTheme()">🌓</button>
-                    </div>
+                    <div class="set-row"><span data-i18n="theme">Tema:</span><button class="btn-theme-toggle" onclick="toggleTheme()">🌓</button></div>
                     <div class="set-row">
                         <span data-i18n="language">Idioma:</span>
                         <div class="lang-buttons">
@@ -96,12 +91,6 @@
                                 <button class="btn-formacao" onclick="mudarFormacao('4-2-3-1', this)">4-2-3-1</button>
                                 <button class="btn-formacao" onclick="mudarFormacao('4-3-2-1', this)">4-3-2-1</button>
                                 <button class="btn-formacao" onclick="mudarFormacao('4-5-1', this)">4-5-1</button>
-                                <button class="btn-formacao" onclick="mudarFormacao('4-1-4-1', this)">4-1-4-1</button>
-                                <button class="btn-formacao" onclick="mudarFormacao('3-5-2', this)">3-5-2</button>
-                                <button class="btn-formacao" onclick="mudarFormacao('3-4-3', this)">3-4-3</button>
-                                <button class="btn-formacao" onclick="mudarFormacao('4-2-4', this)">4-2-4</button>
-                                <button class="btn-formacao" onclick="mudarFormacao('5-3-2', this)">5-3-2</button>
-                                <button class="btn-formacao" onclick="mudarFormacao('5-4-1', this)">5-4-1</button>
                             </div>
                         </section>
                         <section class="config-section">
@@ -118,29 +107,30 @@
                 </div>
 
                 <div id="view-draft" class="view-panel hidden">
-                    <div id="timer-box" class="timer-container hidden">
-                        ⏱️ <span id="timer-sec">30</span>s
+                    <div id="multiplayer-status-box" class="timer-container hidden" style="border-color: var(--gold); color: var(--gold); box-shadow: 0 0 15px var(--gold);">
+                        ⏳ <span id="txt-turno-atual">Aguardando Turno...</span>
                     </div>
 
+                    <div id="timer-box" class="timer-container hidden">⏱️ <span id="timer-sec">30</span>s</div>
+
                     <div id="animacao-sorteio" class="animacao-container hidden">
-                        <div class="dado-icon">🎲</div>
-                        <h3 class="pulsing-text" data-i18n="rolling">Rolando os dados...</h3>
+                        <div class="dado-icon">🎲</div><h3 class="pulsing-text" data-i18n="rolling">Rolando os dados...</h3>
                         <div id="nome-time-sorteado-anim" class="time-temp">...</div>
                     </div>
 
                     <div id="draft-content">
                         <div class="draft-header">
-                            <span class="lbl-saiu" data-i18n="drawn">SAIU</span>
-                            <h3 id="nome-time-sorteado">Time Sorteado</h3>
+                            <span class="lbl-saiu" id="lbl-draft-origem" data-i18n="drawn">SAIU</span>
+                            <h3 id="nome-time-sorteado">MERCADO GLOBAL</h3>
                         </div>
-                        <div class="draft-resorteio">
+                        <div class="draft-resorteio" id="bloco-resorteio">
                             <span class="lbl-resorteio" id="lbl-resorteios-restantes">3 RESTANTES</span>
                             <button class="btn-outra-copa" id="btn-resorteio" onclick="resortear()" data-i18n="reroll">OUTRO SORTEIO</button>
                         </div>
                         <div class="draft-players-section">
                             <span class="lbl-escolha" id="dica-acao" data-i18n="choose_player">ESCOLHA UM JOGADOR</span>
                             <button id="btn-cancel-placement" class="btn-danger hidden" onclick="cancelPlacement()" data-i18n="cancel">CANCELAR AÇÃO</button>
-                            <div id="lista-jogadores-draft" class="player-list-vertical"></div>
+                            <div id="lista-jogadores-draft" class="player-list-vertical" style="max-height: 50vh; overflow-y: auto; padding-right: 5px;"></div>
                         </div>
                     </div>
                 </div>
@@ -159,10 +149,7 @@
                 <h4 data-i18n="box_score">BOX SCORE</h4>
                 <div class="ovr-header"><span id="time-total-ovr">0/11</span></div>
                 <div class="boxscore-averages">
-                    <div class="avg-block">
-                        <span class="avg-label" data-i18n="total_ovr">OVR TOTAL</span>
-                        <span class="avg-value" id="val-ovr-total">0</span>
-                    </div>
+                    <div class="avg-block"><span class="avg-label" data-i18n="total_ovr">OVR TOTAL</span><span class="avg-value" id="val-ovr-total">0</span></div>
                     <div class="avg-block row-avg">
                         <div><span class="avg-label" data-i18n="attack">ATAQUE</span><span class="avg-value val-ataque" id="val-ovr-ataque">0</span></div>
                         <div><span class="avg-label" data-i18n="defense">DEFESA</span><span class="avg-value val-defesa" id="val-ovr-defesa">0</span></div>
@@ -171,90 +158,11 @@
                 <div id="box-score-list"></div>
             </aside>
         </main>
-
-        <div id="view-mata-mata" class="hidden">
-            <div class="torneio-layout" id="layout-torneio-mestre">
-                
-                <div class="torneio-esquerda" id="painel-confronto-ativo">
-                    <h1 id="fase-torneio">OITAVAS DE FINAL</h1>
-                    <h3 id="info-ida-volta">JOGO DE IDA</h3>
-                    
-                    <div class="placar-simulacao">
-                        <div class="time-box">
-                            <h2 id="sim-nome-t1" data-i18n="my_team">MEU TIME</h2>
-                            <span class="ovr-badge" id="sim-ovr-t1">OVR 0</span>
-                            <div class="score-container">
-                                <div class="score" id="sim-placar-t1">0</div>
-                                <div class="pen-score hidden" id="sim-pen-t1">0</div>
-                            </div>
-                            <div class="lista-titulares-sim" id="lista-titulares-meu"></div>
-                        </div>
-                        
-                        <div class="versus-col">
-                            <div class="versus-box">
-                                <span>X</span>
-                                <div id="sim-agregado" class="agregado hidden">AGR: 0 - 0</div>
-                            </div>
-                            <div id="painel-penaltis" class="penaltis-box hidden">
-                                <h5 data-i18n="penalties">PÊNALTIS</h5>
-                                <div id="lista-penaltis-anim"></div>
-                            </div>
-                        </div>
-
-                        <div class="time-box">
-                            <h2 id="sim-nome-t2">CPU</h2>
-                            <span class="ovr-badge" id="sim-ovr-t2">OVR 0</span>
-                            <div class="score-container">
-                                <div class="pen-score hidden" id="sim-pen-t2">0</div>
-                                <div class="score" id="sim-placar-t2">0</div>
-                            </div>
-                            <div class="lista-titulares-sim" id="lista-titulares-cpu"></div>
-                        </div>
-                </div>
-
-                <div id="painel-narracao" class="narracao-box hidden">Aguardando início...</div>
-
-                <div id="controles-simulacao" class="actions-group">
-                    <button class="btn-secundario-sim" onclick="simularDireto()" data-i18n="direct_result">RESULTADO DIRETO</button>
-                    <button class="btn-rolar-big-sim" onclick="simularLanceALance()" data-i18n="play_by_play">LANCE A LANCE</button>
-                </div>
-                <div class="actions-group">
-                    <button id="btn-avancar-fase" class="btn-rolar-big-sim hidden" style="background-color: var(--green);" data-i18n="advance">AVANÇAR</button>
-                </div>
-            </div>
-
-            <div class="torneio-direita-stats" id="painel-direito-mestre">
-                <div id="abas-stats">
-                    <button class="tab-btn active" onclick="mudarAbaStats('stats')" data-i18n="stats">ESTATÍSTICAS</button>
-                    <button class="tab-btn" onclick="mudarAbaStats('tabela')" data-i18n="cup_results">CHAVEAMENTO</button>
-                </div>
-                
-                <div id="conteudo-aba-stats" class="sub-painel-stats">
-                    <div class="ranking-box"><h5 data-i18n="artilharia">⚽ ARTILHARIA</h5><div id="ranking-artilheiros" class="ranking-list"></div></div>
-                    <div class="ranking-box"><h5 data-i18n="assistencias">👟 ASSISTÊNCIAS</h5><div id="ranking-garcons" class="ranking-list"></div></div>
-                    <div class="ranking-box"><h5 data-i18n="clean_sheets">🧤 CLEAN SHEETS</h5><div id="ranking-defesas" class="ranking-list"></div></div>
-                </div>
-                
-                <div id="conteudo-aba-tabela" class="sub-painel-stats hidden">
-                    <div class="bracket-actions">
-                        <button id="btn-simular-resto" class="btn-secundario-sim hidden" onclick="simularProximaFaseCPU()" data-i18n="sim_cpu_next">SIMULAR PRÓXIMA FASE (CPU)</button>
-                        <button id="btn-restart-bracket" class="btn-rolar-big-sim hidden" onclick="recomecarJogoDoZero()" data-i18n="play_again">🔄 JOGAR NOVAMENTE</button>
-                    </div>
-                    <div id="arvore-torneio" class="bracket-wrapper">
-                        <div class="bracket-col" id="col-oitavas"></div>
-                        <div class="bracket-col" id="col-quartas"></div>
-                        <div class="bracket-col" id="col-semi"></div>
-                        <div class="bracket-col" id="col-final"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="view-mata-mata" class="hidden">...</div>
     </div>
-</div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
-    
     <script src="script.js"></script>
 </body>
 </html>
