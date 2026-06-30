@@ -1,4 +1,4 @@
-// 1. BANCO DE TIMES (Insira seus times aqui!)
+// 1. BANCO DE TIMES (Cole os seus aqui)
 const textoBrutoDosTimes = `
 Time: Flamengo 2025
 Rossi, GOL, 84
@@ -3765,6 +3765,7 @@ const TODAS_FORMACOES = {
 };
 const ORDEM_TATICA = ['GOL', 'LD', 'ZAG', 'LE', 'VOL', 'MC', 'ME', 'MD', 'MEI', 'PE', 'PD', 'SA', 'ATA'];
 
+// Atualizei o link aqui dentro pro oficial da sua Vercel: 7a0-brasil.vercel.app!
 const i18n = {
     pt: { formation: "FORMAÇÃO", mode_diff: "MODO • DIFICULDADE", classic: "Clássico", roll_dice: "ROLAR DADO", rolling: "Rolando os dados...", drawn: "SAIU", reroll: "OUTRO SORTEIO", choose_player: "ESCOLHA UM JOGADOR", cancel: "CANCELAR AÇÃO", box_score: "BOX SCORE", total_ovr: "OVR TOTAL", attack: "ATAQUE", defense: "DEFESA", direct_result: "RESULTADO DIRETO", play_by_play: "LANCE A LANCE", advance: "AVANÇAR", stats: "ESTATÍSTICAS", cup_results: "CHAVEAMENTO", penalties: "PÊNALTIS", settings_btn: "AJUSTES ▾", theme: "Tema:", language: "Idioma:",
         spin_again: "GIRAR NOVAMENTE", lifesaver: "SALVA-VIDAS", no_space: "SEM ESPAÇO! ROLAGEM DE EMERGÊNCIA.", rerolls_left: "NÃO CURTIU? {n} RESTANTES", no_rerolls: "SEM RESORTEIOS", ultimate_no_rerolls: "MODO ULTIMATE (0 RESORTEIOS)", click_pitch: "CLIQUE OBRIGATORIAMENTE NO CAMPO", time_out: "TEMPO ESGOTADO! Jogador aleatório escalado.", go_to_knockout: "IR PARA O MATA-MATA",
@@ -3774,7 +3775,7 @@ const i18n = {
         tba: "A definir", wait_goals: "Aguardando gols...", wait_assists: "Aguardando assist...", wait_cs: "Aguardando defesas...", sim_cpu_next: "SIMULAR PRÓXIMA FASE (CPU)", copy_perf: "📋 COPIAR DESEMPENHO", copied: "Texto copiado para a área de transferência!", play_again: "🔄 JOGAR NOVAMENTE", view_bracket: "📊 VER CHAVEAMENTO",
         champ_desc: "Você esculpiu seu nome na história do futebol.", elim_desc: "A zebra solta não perdoa ninguém.",
         artilharia: "⚽ ARTILHARIA", assistencias: "👟 ASSISTÊNCIAS", clean_sheets: "🧤 CLEAN SHEETS",
-        pos_GOL: "GOL", pos_LD: "LD", pos_ZAG: "ZAG", pos_LE: "LE", pos_VOL: "VOL", pos_MC: "MC", pos_ME: "ME", pos_MD: "MD", pos_MEI: "MEI", pos_PE: "PE", pos_PD: "PD", pos_SA: "SA", pos_ATA: "ATA", share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nMontei meu esquadrão tático com: {nomes}.\nDesempenho: {status}!\nOVR Total: {ovr}\n\nJogue também: https://7a0-historico.vercel.app"
+        pos_GOL: "GOL", pos_LD: "LD", pos_ZAG: "ZAG", pos_LE: "LE", pos_VOL: "VOL", pos_MC: "MC", pos_ME: "ME", pos_MD: "MD", pos_MEI: "MEI", pos_PE: "PE", pos_PD: "PD", pos_SA: "SA", pos_ATA: "ATA", share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nMontei meu esquadrão tático com: {nomes}.\nDesempenho: {status}!\nOVR Total: {ovr}\n\nJogue também: https://7a0-brasil.vercel.app"
     },
     en: {
         formation: "FORMATION", mode_diff: "MODE • DIFFICULTY", classic: "Classic", roll_dice: "ROLL DICE", rolling: "Rolling dice...", drawn: "DRAWN", reroll: "REROLL", choose_player: "CHOOSE A PLAYER", cancel: "CANCEL ACTION", box_score: "BOX SCORE", total_ovr: "TOTAL OVR", attack: "ATTACK", defense: "DEFENSE", direct_result: "QUICK SIM", play_by_play: "PLAY-BY-PLAY", advance: "ADVANCE", stats: "STATS", cup_results: "BRACKET", penalties: "SHOOTOUT", settings_btn: "SETTINGS ▾", theme: "Theme:", language: "Language:",
@@ -3785,7 +3786,7 @@ const i18n = {
         tba: "TBD", wait_goals: "Waiting for goals...", wait_assists: "Waiting for assists...", wait_cs: "Waiting for clean sheets...", sim_cpu_next: "SIM NEXT ROUND (CPU)", copy_perf: "📋 COPY PERFORMANCE", copied: "Text copied to clipboard!", play_again: "🔄 PLAY AGAIN", view_bracket: "📊 VIEW BRACKET",
         champ_desc: "You have carved your name in football history.", elim_desc: "The underdog spares no one.",
         artilharia: "⚽ TOP SCORERS", assistencias: "👟 ASSISTS", clean_sheets: "🧤 CLEAN SHEETS",
-        pos_GOL: "GK", pos_LD: "RB", pos_ZAG: "CB", pos_LE: "LB", pos_VOL: "CDM", pos_MC: "CM", pos_ME: "LM", pos_MD: "RM", pos_MEI: "CAM", pos_PE: "LW", pos_PD: "RW", pos_SA: "CF", pos_ATA: "ST", share_text: "🏆 [7-0 BRAZIL - HISTORIC CUP]\n\nBuilt my dream team: {nomes}.\nPerformance: {status}!\nTotal OVR: {ovr}\n\nPlay now: https://7a0-historico.vercel.app"
+        pos_GOL: "GK", pos_LD: "RB", pos_ZAG: "CB", pos_LE: "LB", pos_VOL: "CDM", pos_MC: "CM", pos_ME: "LM", pos_MD: "RM", pos_MEI: "CAM", pos_PE: "LW", pos_PD: "RW", pos_SA: "CF", pos_ATA: "ST", share_text: "🏆 [7-0 BRAZIL - HISTORIC CUP]\n\nBuilt my dream team: {nomes}.\nPerformance: {status}!\nTotal OVR: {ovr}\n\nPlay now: https://7a0-brasil.vercel.app"
     },
     es: {
         formation: "FORMACIÓN", mode_diff: "MODO • DIFICULTAD", classic: "Clásico", roll_dice: "LANZAR DADO", rolling: "Lanzando dados...", drawn: "SORTEADO", reroll: "OTRO SORTEO", choose_player: "ELIGE JUGADOR", cancel: "CANCELAR ACCIÓN", box_score: "BOX SCORE", total_ovr: "GRL TOTAL", attack: "ATAQUE", defense: "DEFENSA", direct_result: "RESULTADO RÁPIDO", play_by_play: "JUGADA A JUGADA", advance: "AVANZAR", stats: "ESTADÍSTICAS", cup_results: "CUADRO", penalties: "PENALES", settings_btn: "AJUSTES ▾", theme: "Tema:", language: "Idioma:",
@@ -3796,7 +3797,7 @@ const i18n = {
         tba: "Por definir", wait_goals: "Esperando goles...", wait_assists: "Esperando asist...", wait_cs: "Esperando porterías a cero...", sim_cpu_next: "SIMULAR SIGUIENTE (CPU)", copy_perf: "📋 COPIAR DESEMPEÑO", copied: "¡Texto copiado al portapapeles!", play_again: "🔄 JUGAR DE NUEVO", view_bracket: "📊 VER CUADRO",
         champ_desc: "Has esculpido tu nombre en la historia del fútbol.", elim_desc: "La sorpresa no perdona a nadie.",
         artilharia: "⚽ GOLEADORES", assistencias: "👟 ASISTENCIAS", clean_sheets: "🧤 PORTERÍAS IMBATIDAS",
-        pos_GOL: "POR", pos_LD: "LD", pos_ZAG: "DFC", pos_LE: "LI", pos_VOL: "MCD", pos_MC: "MC", pos_ME: "MI", pos_MD: "MD", pos_MEI: "MCO", pos_PE: "EI", pos_PD: "ED", pos_SA: "SD", pos_ATA: "DC", share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nArmé mi equipo soñado: {nomes}.\nRendimiento: ¡{status}!\nGRL Total: {ovr}\n\nJuega tú también: https://7a0-historico.vercel.app"
+        pos_GOL: "POR", pos_LD: "LD", pos_ZAG: "DFC", pos_LE: "LI", pos_VOL: "MCD", pos_MC: "MC", pos_ME: "MI", pos_MD: "MD", pos_MEI: "MCO", pos_PE: "EI", pos_PD: "ED", pos_SA: "SD", pos_ATA: "DC", share_text: "🏆 [7-0 BRASIL - COPA HISTÓRICA]\n\nArmé mi equipo soñado: {nomes}.\nRendimiento: ¡{status}!\nGRL Total: {ovr}\n\nJuega tú también: https://7a0-brasil.vercel.app"
     }
 };
 
@@ -3822,7 +3823,6 @@ function verificarSeECloneDoElenco(jogador) { return Object.values(meuTime).some
 
 processarBancoDeDados(); desenharFormacao(); atualizarBoxScore();
 
-// SETTINGS & IDIOMAS FIX (Segurança contra chamadas de UI antes da Copa)
 function toggleSettings() { document.getElementById("settings-dropdown").classList.toggle("hidden"); }
 function toggleTheme() { const body = document.querySelector('.app-layout'); body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark'; }
 
@@ -3848,7 +3848,7 @@ function updateDynamicTexts() {
     document.getElementById("sim-agregado").innerText = `${t("agg")}: ${partidaAtual.agregadoMeus} - ${partidaAtual.agregadoCpu}`;
     
     desenharFormacao(); atualizarBoxScore();
-    if(cpuAtual) { // TRAVA DE SEGURANÇA (Só atualiza telas da Copa se tiver rolando a Copa)
+    if(cpuAtual) { 
         renderizarEscalacoesPainel(); 
         renderizarRankingsCopa(); 
         renderizarBracket();
@@ -4054,7 +4054,7 @@ function atualizarBoxScore() {
 }
 
 // ==========================================
-// CENTRAL DO TORNEIO E CHAVEAMENTO
+// MATA-MATA COM DICIONARIO PROTEGIDO
 // ==========================================
 
 function mudarAbaStats(aba) {
@@ -4133,9 +4133,7 @@ function configurarTelaPartida() {
     document.getElementById("sim-nome-t1").innerText = t("my_team"); document.getElementById("sim-ovr-t1").innerText = `OVR ${meuOvrTorneio}`;
     document.getElementById("sim-placar-t1").innerText = "0"; document.getElementById("sim-pen-t1").classList.add("hidden");
     
-    if (cpuAtual) {
-        document.getElementById("sim-nome-t2").innerText = cpuAtual.nome.toUpperCase(); document.getElementById("sim-ovr-t2").innerText = `OVR ${cpuAtual.ovr}`;
-    }
+    if (cpuAtual) { document.getElementById("sim-nome-t2").innerText = cpuAtual.nome.toUpperCase(); document.getElementById("sim-ovr-t2").innerText = `OVR ${cpuAtual.ovr}`; }
     document.getElementById("sim-placar-t2").innerText = "0"; document.getElementById("sim-pen-t2").classList.add("hidden");
     document.getElementById("painel-penaltis").classList.add("hidden");
     
@@ -4188,9 +4186,8 @@ function simularLanceALance() {
         } else if (minutosGolsB.includes(tempo)) {
             golsMarcadosB++; document.getElementById("sim-placar-t2").innerText = golsMarcadosB;
             
-            // FIX: Array Boundaries
             let jgsB = cpuAtual.titulares; let atacantesB = jgsB.filter(j => j.posicoes && j.posicoes.some(p => ['ATA','PE','PD','SA','MEI'].includes(p))); if(atacantesB.length === 0) atacantesB = jgsB;
-            let art = atacantesB[Math.floor(Math.random() * atacantesB.length)].nome;
+            let art = atacantesB[Math.floor(Math.random() * atacantesB.length)].nome; 
             eventosPartidaAtual.cpu.gols[art] = (eventosPartidaAtual.cpu.gols[art] || 0) + 1; statsCopa.artilheiros[art] = (statsCopa.artilheiros[art] || 0) + 1;
             
             let textoAssist = "";
@@ -4220,7 +4217,6 @@ function calcularPlacarMatematico(ovrA, ovrB) {
 
 function animarPlacar(golsA, golsB, callback) { document.getElementById("sim-placar-t1").innerText = golsA; document.getElementById("sim-placar-t2").innerText = golsB; setTimeout(callback, 300); }
 
-// FIX: ARRAY BOUNDARIES FOR SIMULATIONS
 function computarEstatisticasEspecificas(timeA, timeB, gA, gB, isPartidaPlayer = false) {
     let jgsA = timeA.titulares; if(!jgsA || jgsA.length === 0) return;
     let atacantesA = jgsA.filter(j => j.posicoes && j.posicoes.some(p => ['ATA','PE','PD','SA','MEI','MC','MD','ME'].includes(p))); if(atacantesA.length === 0) atacantesA = jgsA;
